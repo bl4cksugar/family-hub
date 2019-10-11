@@ -7,22 +7,17 @@ import AdminPanel from './views/AdminPanel.vue'
 Vue.use(Router)
 
 export default new Router({
-	mode: 'history',
-	base: process.env.BASE_URL,
-	routes: [{
-			path: '/',
-			name: 'home',
-			component: Home
-		},
-
-		{
-			path: '/admin',
-			name: 'adminpanel',
-			component: AdminPanel
-
-
-		}
-
-
-	]
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes: [{
+      path: '/',
+      name: 'home',
+      component: Home
+    },
+    {
+      path: '/admin',
+      name: 'admin-panel',
+      component: AdminPanel
+    },
+  ]
 })
