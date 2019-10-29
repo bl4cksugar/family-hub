@@ -21,6 +21,7 @@
 					hide-details
 					v-model="password"
 					label="password"
+					type="password"
 					prepend-inner-icon="fas fa-key"
 					@click:append="show1 = !show1"
 				></v-text-field>
@@ -31,18 +32,6 @@
 			<v-btn @click="login">
 				<span>SIGN UP</span>
 			</v-btn>
-		</v-col>
-		<v-col sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">
-			<v-menu offset-y>
-				<template v-slot:activator="{ on }">
-					<v-app-bar-nav-icon color="primary" dark v-on="on"></v-app-bar-nav-icon>
-				</template>
-				<v-list>
-					<v-list-item v-for="(item, index) in items" :key="index" @click="login">
-						<v-list-item-title>{{ item.title }}</v-list-item-title>
-					</v-list-item>
-				</v-list>
-			</v-menu>
 		</v-col>
 	</v-row>
 </template>
@@ -58,13 +47,7 @@ export default {
 		return {
 			show1: false,
 			password: "",
-			nickname: "",
-			items: [
-				{ title: "Click Me" },
-				{ title: "Click Me" },
-				{ title: "Click Me" },
-				{ title: "Click Me 2" }
-			]
+			nickname: ""
 		};
 	},
 

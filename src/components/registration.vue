@@ -57,6 +57,18 @@
 					@click:append="show1 = !show1"
 				></v-text-field>
 
+				<v-text-field
+					background-color="rgba(255, 255, 255, 0.9)"
+					color="grey"
+					outlined
+					v-model="repeatpassword"
+					:rules="[rules.required, rules.min]"
+					:type="show1 ? 'text' : 'password'"
+					label="repeat password"
+					prepend-inner-icon="fas fa-key"
+					@keyup.enter="submit"
+				></v-text-field>
+
 				<v-menu
 					ref="menu"
 					v-model="menu"
@@ -100,6 +112,7 @@ export default {
 		return {
 			show1: false,
 			password: "",
+			repeatpassword: "",
 			nickname: "",
 			login: "",
 			name: "",
@@ -107,6 +120,7 @@ export default {
 			email: "",
 			date: null,
 			menu: false,
+
 			rules: {
 				required: value => !!value || "Required.",
 				min: v => v.length >= 8 || "Min 8 characters",
@@ -128,6 +142,48 @@ export default {
 	},
 
 	methods: {
+		submit() {
+			var that = this;
+			if (that.$refs.form.validate()) {
+				axios
+					.post("authentication/register", {
+						username: this.username,
+						password: this.password,
+						email: this.email,
+						name: this.name,
+						surname: this.surname,
+						postcode: this.postcode,
+						street: this.street,
+						housenumber: this.housenumber,
+						apartamentnumber: this.apartamentnumber,
+						ConfirmedPassword: this.ConfirmedPassword
+					})
+					.then(function(response) {
+						console.log(response.data);
+						if (!response.data.successful)
+							that.alert = {
+								state: true,
+								type: "error",
+								content: "Passwords must be the same!"
+							};
+						else
+							that.alert = {
+								state: true,
+								type: "success",
+								content: "You have successfully registered!"
+							};
+						that.clear();
+					})
+					.catch(function() {
+						that.alert = {
+							state: true,
+							type: "error",
+							content: "Something goes wrong! Try again"
+						};
+					});
+			}
+		},
+
 		save(date) {
 			this.$refs.menu.save(date);
 		},
@@ -137,6 +193,7 @@ export default {
 				surname: this.surname,
 				email: this.email,
 				password: this.password,
+				repeatpassword: this.repeatpassword,
 				birthday: this.date
 			});
 			result ? console.log("zarejestrowano") : console.log("błąd");
