@@ -1,43 +1,38 @@
 <template>
-	<v-container
-		class="box"
-		fluid
-		fill-height
-		style=" background-image:linear-gradient(rgb(242,171,91),rgb(91,136,85));"
-	>
+	<v-container class="box" fluid fill-height>
 		<v-row>
-			<div class="sidemenu">
-				<v-col sm="12" md="4">
-					<div class="headline mb-2 text-left title">ADMINISTRATION PANEL</div>
-				</v-col>
-			</div>
 			<v-col sm="12" md="8"></v-col>
 		</v-row>
 	</v-container>
 </template>
 
 <script>
-import { Slide } from "vue-burger-menu";
-
 export default {
-	components: {
-		Slide
+	components: {},
+
+	methods: {
+		signout() {
+			let result = axios.post("addresshere", {
+				login: this.login,
+				password: this.password
+			});
+			result ? console.log("wylogowano") : console.log("błąd");
+		}
+	},
+	created() {
+		this.$emit("isLoginPage", false);
 	}
 };
 </script>
 
 <style scoped>
 .box {
-	min-height: 100vh;
-}
-
-.sidemenu {
-	background-color: #3f3f41;
 	min-height: 90vh;
-	min-width: 20%;
+	background-image: linear-gradient(rgb(242, 171, 91), rgb(91, 136, 85));
 }
 
 .title {
+	min-width: 20vw;
 	color: white;
 	margin-top: 20px;
 }

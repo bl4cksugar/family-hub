@@ -17,13 +17,16 @@ import registration from "../components/registration";
 export default {
 	components: {
 		registration
+	},
+	created() {
+		this.$emit("isLoginPage", true);
 	}
 };
 </script>
 
 <style>
 .box {
-	min-height: 100vh;
+	min-height: 98vh;
 	background-image: linear-gradient(rgb(242, 171, 91), rgb(91, 136, 85));
 }
 .background-img {
