@@ -45,7 +45,7 @@ export default {
 .bg {
 	background: url("../assets/bg1.png");
 	background-size: 140vh;
-	min-height: 90vh;
+	min-height: 95vh;
 }
 
 .btn {

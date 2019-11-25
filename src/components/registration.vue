@@ -187,8 +187,8 @@ export default {
 		save(date) {
 			this.$refs.menu.save(date);
 		},
-		signin() {
-			let result = axios.post("addresshere", {
+		async signin() {
+			let result = await axios.post("auth/signup", {
 				name: this.name,
 				surname: this.surname,
 				email: this.email,
@@ -196,7 +196,7 @@ export default {
 				repeatpassword: this.repeatpassword,
 				birthday: this.date
 			});
-			result ? console.log("zarejestrowano") : console.log("błąd");
+			console.log(result);
 		}
 	}
 };

@@ -1,21 +1,14 @@
 <template>
 	<v-col class="sidemenu">
-		<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
+		<v-row class="title text-center">USERS PANEL</v-row>
 		<v-row>
-			<v-btn to="/admin/users" rounded>USERS</v-btn>
+			<v-btn to="/panel/tree" rounded>TREE</v-btn>
 		</v-row>
 		<v-row>
-			<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
+			<v-btn to="/panel/news" rounded>NEWS</v-btn>
 		</v-row>
 		<v-row>
-			<v-btn to="/admin/news" rounded>NEWS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/systemlogs" rounded>SYSTEM LOGS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
-		</v-row>
+			
 		<v-row>
 			<v-btn
 				@click="signout"

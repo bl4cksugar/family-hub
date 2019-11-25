@@ -53,7 +53,7 @@ export default {
 
 	methods: {
 		login() {
-			let result = axios.post("addresshere", {
+			let result = axios.post("auth/login", {
 				login: this.login,
 				password: this.password
 			});
