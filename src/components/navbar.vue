@@ -18,7 +18,6 @@
 					<v-btn v-on="on" @click="login">
 						<span>SIGN IN</span>
 					</v-btn>
-					<!-- <v-app-bar-nav-icon color="primary" dark v-on="on"></v-app-bar-nav-icon> -->
 				</template>
 				<v-container
 					style="background:rgba(255,255,255,0.75)"

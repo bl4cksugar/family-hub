@@ -3,9 +3,9 @@
 		<nav-bar :isLoginPage="isLoginPage"></nav-bar>
 		<v-container fluid class="pa-0">
 			<div class="row">
-				<div v-if="true" class="col-xs-12 col-sm-4 px-0 py-0">
+				<!-- <div v-if="false" class="col-xs-12 col-sm-4 px-0 py-0">
 					<sidemenu></sidemenu>
-				</div>
+				</div>-->
 				<div class="col-xs-12 px-0 py-0" :class="appStyle">
 					<router-view @isLoginPage="changePage"></router-view>
 				</div>
