@@ -10,8 +10,7 @@ import cookieHelper from './helpers/cookie'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
-
-Vue.axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
+Vue.axios.defaults.baseURL = "http://laravel.przedprojekt.com/api/";
 Vue.axios.interceptors.request.use(
   (config) => {
     let token = cookieHelper.getTokenCookie();

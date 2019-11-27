@@ -4,103 +4,105 @@
 			<div class="title">
 				<div class="headline mb-2 text-center">REGISTRATION</div>
 			</div>
-			<v-card-text>
-				<v-row>
-					<v-col sm="6">
-						<v-text-field
-							background-color="rgba(255, 255, 255, 0.9)"
-							color="grey"
-							outlined
-							v-model="name"
-							label="name"
-						></v-text-field>
-					</v-col>
+			<v-form ref="form" v-model="valid" lazy-validation>
+				<v-card-text>
+					<v-row>
+						<v-col sm="6">
+							<v-text-field
+								background-color="rgba(255, 255, 255, 0.9)"
+								color="grey"
+								outlined
+								v-model="name"
+								label="name"
+							></v-text-field>
+						</v-col>
 
-					<v-col sm="6">
-						<v-text-field
-							background-color="rgba(255, 255, 255, 0.9)"
-							color="grey"
-							outlined
-							v-model="surname"
-							label="surname"
-						></v-text-field>
-					</v-col>
-				</v-row>
+						<v-col sm="6">
+							<v-text-field
+								background-color="rgba(255, 255, 255, 0.9)"
+								color="grey"
+								outlined
+								v-model="surname"
+								label="surname"
+							></v-text-field>
+						</v-col>
+					</v-row>
 
-				<v-text-field
-					background-color="rgba(255, 255, 255, 0.9)"
-					color="grey"
-					outlined
-					v-model="email"
-					label="e-mail"
-					:rules="[rules.required, rules.email]"
-				></v-text-field>
+					<v-text-field
+						background-color="rgba(255, 255, 255, 0.9)"
+						color="grey"
+						outlined
+						v-model="email"
+						label="e-mail"
+						:rules="[rules.required, rules.email]"
+					></v-text-field>
 
-				<v-text-field
-					background-color="rgba(255, 255, 255, 0.9)"
-					color="grey"
-					outlined
-					v-model="login"
-					label="login"
-				></v-text-field>
+					<v-text-field
+						background-color="rgba(255, 255, 255, 0.9)"
+						color="grey"
+						outlined
+						v-model="login"
+						label="login"
+					></v-text-field>
 
-				<v-text-field
-					background-color="rgba(255, 255, 255, 0.9)"
-					color="grey"
-					outlined
-					v-model="password"
-					:append-icon="show1 ? 'fas fa-eye' : 'fas fa-eye-slash'"
-					:rules="[rules.required, rules.min]"
-					:type="show1 ? 'text' : 'password'"
-					label="password"
-					prepend-inner-icon="fas fa-key"
-					@click:append="show1 = !show1"
-				></v-text-field>
+					<v-text-field
+						background-color="rgba(255, 255, 255, 0.9)"
+						color="grey"
+						outlined
+						v-model="password"
+						:append-icon="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"
+						:rules="[rules.required, rules.min]"
+						:type="showPassword ? 'text' : 'password'"
+						label="password"
+						prepend-inner-icon="fas fa-key"
+						@click:append="showPassword = !showPassword"
+					></v-text-field>
 
-				<v-text-field
-					background-color="rgba(255, 255, 255, 0.9)"
-					color="grey"
-					outlined
-					v-model="repeatpassword"
-					:rules="[rules.required, rules.min]"
-					:type="show1 ? 'text' : 'password'"
-					label="repeat password"
-					prepend-inner-icon="fas fa-key"
-					@keyup.enter="submit"
-				></v-text-field>
+					<v-text-field
+						background-color="rgba(255, 255, 255, 0.9)"
+						color="grey"
+						outlined
+						v-model="repeatPassword"
+						:rules="[rules.required, rules.min]"
+						:type="showPassword ? 'text' : 'password'"
+						label="repeat password"
+						prepend-inner-icon="fas fa-key"
+						@keyup.enter="submit"
+					></v-text-field>
 
-				<v-menu
-					ref="menu"
-					v-model="menu"
-					:close-on-content-click="false"
-					transition="scale-transition"
-					offset-y
-					min-width="290px"
-				>
-					<template v-slot:activator="{ on }">
-						<v-text-field
-							color="grey"
-							background-color="rgba(255, 255, 255, 0.9)"
+					<v-menu
+						ref="menu"
+						v-model="menu"
+						:close-on-content-click="false"
+						transition="scale-transition"
+						offset-y
+						min-width="290px"
+					>
+						<template v-slot:activator="{ on }">
+							<v-text-field
+								color="grey"
+								background-color="rgba(255, 255, 255, 0.9)"
+								v-model="date"
+								label="Birthday date"
+								outlined
+								readonly
+								v-on="on"
+							></v-text-field>
+						</template>
+						<v-date-picker
+							ref="picker"
 							v-model="date"
-							label="Birthday date"
-							outlined
-							readonly
-							v-on="on"
-						></v-text-field>
-					</template>
-					<v-date-picker
-						ref="picker"
-						v-model="date"
-						:max="new Date().toISOString().substr(0, 10)"
-						min="1950-01-01"
-						@change="save"
-					></v-date-picker>
-				</v-menu>
+							:max="new Date().toISOString().substr(0, 10)"
+							min="1950-01-01"
+							@change="save"
+						></v-date-picker>
+					</v-menu>
 
-				<div class="btn text-center">
-					<v-btn @click="signin" rounded width="200px">SIGN UP</v-btn>
-				</div>
-			</v-card-text>
+					<div class="btn text-center">
+						<v-btn @click="signUp" rounded width="200px">SIGN UP</v-btn>
+					</div>
+				</v-card-text>
+			</v-form>
 		</v-card>
 	</v-col>
 </template>
@@ -110,14 +112,15 @@ export default {
 	name: "registration",
 	data() {
 		return {
-			show1: false,
+			showPassword: false,
 			password: "",
-			repeatpassword: "",
-			nickname: "",
+			repeatPassword: "",
 			login: "",
 			name: "",
 			surname: "",
 			email: "",
+			valid: null,
+			alert: null,
 			date: null,
 			menu: false,
 
@@ -142,45 +145,39 @@ export default {
 	},
 
 	methods: {
-		submit() {
-			var that = this;
-			if (that.$refs.form.validate()) {
-				axios
-					.post("authentication/register", {
-						username: this.username,
-						password: this.password,
-						email: this.email,
-						name: this.name,
-						surname: this.surname,
-						postcode: this.postcode,
-						street: this.street,
-						housenumber: this.housenumber,
-						apartamentnumber: this.apartamentnumber,
-						ConfirmedPassword: this.ConfirmedPassword
-					})
-					.then(function(response) {
-						console.log(response.data);
-						if (!response.data.successful)
-							that.alert = {
-								state: true,
-								type: "error",
-								content: "Passwords must be the same!"
-							};
-						else
-							that.alert = {
-								state: true,
-								type: "success",
-								content: "You have successfully registered!"
-							};
-						that.clear();
-					})
-					.catch(function() {
-						that.alert = {
+		async signUp() {
+			if (this.$refs.form.validate()) {
+				console.log("test");
+				let result = await axios.post("auth/signup", {
+					email: this.email,
+					password: this.password,
+					name: this.surname,
+					password_confirmation: this.repeatPassword
+					// username: this.username,
+					// name: this.name,
+					// surname: this.surname,
+				});
+				console.log(result);
+				if (result) {
+					if (!response.data.successful)
+						this.alert = {
 							state: true,
 							type: "error",
-							content: "Something goes wrong! Try again"
+							content: "Passwords must be the same!"
 						};
-					});
+					else
+						this.alert = {
+							state: true,
+							type: "success",
+							content: "You have successfully registered!"
+						};
+				} else {
+					this.alert = {
+						state: true,
+						type: "error",
+						content: "Something goes wrong! Try again"
+					};
+				}
 			}
 		},
 

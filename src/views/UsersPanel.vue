@@ -18,9 +18,6 @@ export default {
 			});
 			result ? console.log("wylogowano") : console.log("błąd");
 		}
-	},
-	created() {
-		this.$emit("isLoginPage", false);
 	}
 };
 </script>

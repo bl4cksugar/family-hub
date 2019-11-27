@@ -11,8 +11,11 @@
 			</router-link>
 		</v-toolbar-title>
 		<v-spacer></v-spacer>
-		<login v-if="isLoginPage"></login>
-		<v-col sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">
+		<login v-if="!isLogged"></login>
+		<v-btn v-else v-on="on" @click="login">
+			<span>Logout</span>
+		</v-btn>
+		<v-col v-if="!isLogged" sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">
 			<v-dialog v-model="dialog" max-width="450px">
 				<template v-slot:activator="{ on }">
 					<v-btn v-on="on" @click="login">
@@ -62,14 +65,10 @@
 				
 <script>
 import login from "./login";
+import { mapGetters } from "vuex";
+
 export default {
 	name: "navbar",
-	props: {
-		isLoginPage: {
-			type: Boolean,
-			required: true
-		}
-	},
 	data() {
 		return {
 			nickname: null,
@@ -80,14 +79,38 @@ export default {
 	components: {
 		login: login
 	},
-
+	computed: {
+		...mapGetters({
+			isLogged: "user"
+		})
+	},
 	methods: {
-		login() {
-			let result = axios.post("addresshere", {
+		async login() {
+			let result = await axios.post("auth/login", {
 				login: this.login,
 				password: this.password
 			});
-			result ? console.log("zalogowano") : console.log("błąd");
+			if (result) {
+				console.log("do sth");
+			} else {
+				this.alert = {
+					state: true,
+					type: "error",
+					content: "Something goes wrong! Try again"
+				};
+			}
+		},
+		async logout() {
+			let result = await axios.get("auth/logout");
+			if (result) {
+				console.log("do sth");
+			} else {
+				this.alert = {
+					state: true,
+					type: "error",
+					content: "Something goes wrong! Try again"
+				};
+			}
 		}
 	}
 };
