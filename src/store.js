@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import cookieHelper from './helpers/cookie'
+import {
+  parseJWT
+} from './helpers/parseJwt'
 
 Vue.use(Vuex)
 
@@ -23,8 +26,9 @@ export default new Vuex.Store({
     setSession({
       commit
     }, data) {
+      let user = parseJWT(data.accessToken);
       cookieHelper.setTokenCookie(data.accessToken);
-      commit('storeUser', data.accessToken0)
+      commit('storeUser', user)
     },
     deleteSession({
       commit

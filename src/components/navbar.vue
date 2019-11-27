@@ -12,7 +12,7 @@
 		</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<login v-if="!isLogged"></login>
-		<v-btn v-else v-on="on" @click="login">
+		<v-btn v-else @click="logout">
 			<span>Logout</span>
 		</v-btn>
 		<v-col v-if="!isLogged" sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">

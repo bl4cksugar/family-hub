@@ -22,6 +22,7 @@
 					v-model="password"
 					label="password"
 					type="password"
+					prepend-inner-icon="fas fa-key"
 				></v-text-field>
 			</v-toolbar-items>
 		</v-col>

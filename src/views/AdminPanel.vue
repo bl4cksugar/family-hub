@@ -10,15 +10,7 @@
 export default {
 	components: {},
 
-	methods: {
-		signout() {
-			let result = axios.post("addresshere", {
-				login: this.login,
-				password: this.password
-			});
-			result ? console.log("wylogowano") : console.log("błąd");
-		}
-	}
+	methods: {}
 };
 </script>
 

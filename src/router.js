@@ -37,8 +37,8 @@ const router = new Router({
       name: 'admin-panel',
       component: AdminPanel,
       meta: {
-        requiresAuth: true,
-        requiresAdmin: true
+        requiresAdmin: true,
+        requiresAuth: true
       }
     },
     {
@@ -46,8 +46,8 @@ const router = new Router({
       name: 'users',
       component: Users,
       meta: {
-        requiresAuth: true,
-        requiresAdmin: true
+        requiresAdmin: true,
+        requiresAuth: true
       }
     },
     {
@@ -55,8 +55,8 @@ const router = new Router({
       name: 'families',
       component: Families,
       meta: {
-        requiresAuth: true,
-        requiresAdmin: true
+        requiresAdmin: true,
+        requiresAuth: true
       }
     },
     {
@@ -64,8 +64,8 @@ const router = new Router({
       name: 'news',
       component: News,
       meta: {
-        requiresAuth: true,
-        requiresAdmin: true
+        requiresAdmin: true,
+        requiresAuth: true
       }
     },
     {
@@ -73,8 +73,8 @@ const router = new Router({
       name: 'systemlogs',
       component: SystemLogs,
       meta: {
-        requiresAuth: true,
-        requiresAdmin: true
+        requiresAdmin: true,
+        requiresAuth: true
       }
     },
     {
@@ -82,8 +82,8 @@ const router = new Router({
       name: 'affienities',
       component: Affienities,
       meta: {
-        requiresAuth: true,
-        requiresAdmin: true
+        requiresAdmin: true,
+        requiresAuth: true
       }
     },
     {
@@ -99,25 +99,27 @@ const router = new Router({
 
 router.beforeEach(async (to, from, next) => {
   let token = cookieHelper.getTokenCookie();
-  if (to.matched.some(r => r.meta.requiresAdmin)) {
-    if (token && token.isAdmin) {
-      next({
-        path: "/"
-      })
-      return;
+  if (to.matched.some(r => r.meta.requiresAuth)) {
+    if (to.matched.some(r => r.meta.requiresAdmin)) {
+      if (!token || !token.isAdmin) {
+        next({
+          path: ""
+        })
+        return;
+      }
     }
-  } else if (to.matched.some(r => r.meta.requiresAuth)) {
     if (!token) {
       store.dispatch('deleteSession');
       next({
-        path: "/"
+        path: ""
       })
       return;
     }
   } else {
     if (token) {
+      console.log(3)
       next({
-        path: ""
+        path: "/test"
       })
       return;
     } else
