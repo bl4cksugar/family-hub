@@ -15,7 +15,7 @@ export default {
 	getTokenCookie() {
 		// return cookie.get(TOKEN);
 		testCookie.isAdmin = true;
-		return null
+		return testCookie;
 	},
 	deleteTokenCookie() {
 		// var date = new Date();

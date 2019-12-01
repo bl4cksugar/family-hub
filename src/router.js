@@ -25,14 +25,6 @@ const router = new Router({
       component: Home
     },
     {
-      path: '/test',
-      name: 'test',
-      component: FamilyTree,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
       path: '/admin',
       name: 'admin-panel',
       component: AdminPanel,
@@ -117,7 +109,6 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     if (token) {
-      console.log(3)
       next({
         path: "/test"
       })

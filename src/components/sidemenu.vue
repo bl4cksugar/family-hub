@@ -1,21 +1,38 @@
 <template>
 	<v-col class="sidemenu">
-		<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
-		<v-row>
-			<v-btn to="/admin/users" rounded>USERS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/news" rounded>NEWS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/systemlogs" rounded>SYSTEM LOGS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
-		</v-row>
+		<div v-if="isAdmin">
+			<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
+			<v-row>
+				<v-btn to="/admin/users" rounded>USERS</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/news" rounded>NEWS</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/systemlogs" rounded>SYSTEM LOGS</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
+			</v-row>
+		</div>
+		<div>
+			<v-row class="title text-center">USER PANEL</v-row>
+			<v-row>
+				<v-btn to="/panel/profile" rounded>PROFILE</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/panel/tree" rounded>TREE</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/panel/gallery" rounded>GALLERY</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/panel/news" rounded>NEWS</v-btn>
+			</v-row>
+		</div>
 		<v-row>
 			<v-btn
 				@click="signout"
@@ -30,9 +47,18 @@
 
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
 	components: {},
-
+	computed: {
+		...mapGetters({
+			isLogged: "user"
+		}),
+		isAdmin() {
+			return this.isLogged.admin === true ? true : false;
+		}
+	},
 	methods: {
 		signout() {
 			let result = axios.post("addresshere", {
@@ -63,13 +89,13 @@ export default {
 }
 
 .row {
-	align-items: center;
+	margin: 20px 0 0 0;
 	justify-content: center;
 }
 
 .v-btn {
 	width: 20vw;
 	min-width: 150px !important;
-	max-width: 400px !important;
+	max-width: 200px !important;
 }
 </style>

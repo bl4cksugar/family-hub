@@ -147,7 +147,6 @@ export default {
 	methods: {
 		async signUp() {
 			if (this.$refs.form.validate()) {
-				console.log("test");
 				let result = await axios.post("auth/signup", {
 					email: this.email,
 					password: this.password,
@@ -183,17 +182,6 @@ export default {
 
 		save(date) {
 			this.$refs.menu.save(date);
-		},
-		async signin() {
-			let result = await axios.post("auth/signup", {
-				name: this.name,
-				surname: this.surname,
-				email: this.email,
-				password: this.password,
-				repeatpassword: this.repeatpassword,
-				birthday: this.date
-			});
-			console.log(result);
 		}
 	}
 };

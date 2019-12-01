@@ -3,9 +3,9 @@
 		<nav-bar></nav-bar>
 		<v-container fluid class="pa-0">
 			<div class="row">
-				<!-- <div v-if="false" class="col-xs-12 col-sm-4 px-0 py-0">
+				<div v-if="this.isLogged" class="col-xs-12 col-sm-4 col-md-4 col-lg-2 px-0 py-0">
 					<sidemenu></sidemenu>
-				</div>-->
+				</div>
 				<div class="col-xs-12 px-0 py-0" :class="appStyle">
 					<router-view></router-view>
 				</div>
@@ -34,7 +34,7 @@ export default {
 	},
 	computed: {
 		appStyle() {
-			return !this.isLogged ? "col-sm-12" : "col-sm-8";
+			return !this.isLogged ? "col-sm-12" : "col-sm-8 col-md-8 col-lg-10";
 		},
 		...mapGetters({
 			isLogged: "user"
