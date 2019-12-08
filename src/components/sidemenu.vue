@@ -3,7 +3,7 @@
 		<div v-if="isAdmin">
 			<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
 			<v-row>
-				<v-btn to="/admin/users" rounded>USERS</v-btn>
+				<v-btn to="/admin/userspanel" rounded>USERS</v-btn>
 			</v-row>
 			<v-row>
 				<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
@@ -18,7 +18,7 @@
 				<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
 			</v-row>
 		</div>
-		<div>
+		<div v-if="!isAdmin && isLogged">
 			<v-row class="title text-center">USER PANEL</v-row>
 			<v-row>
 				<v-btn to="/panel/profile" rounded>PROFILE</v-btn>
@@ -48,24 +48,29 @@
 
 <script>
 import { mapGetters } from "vuex";
+import store from "../store";
+import axios from "axios";
 
 export default {
 	components: {},
 	computed: {
 		...mapGetters({
-			isLogged: "user"
+			entity: "user"
 		}),
 		isAdmin() {
-			return this.isLogged.admin === true ? true : false;
+			return this.entity.type === "admin" ? true : false;
+		},
+		isLogged() {
+			return this.entity ? true : false;
 		}
 	},
 	methods: {
 		signout() {
-			let result = axios.post("addresshere", {
-				login: this.login,
-				password: this.password
-			});
-			result ? console.log("wylogowano") : console.log("błąd");
+			let result = axios.get("addresshere");
+			if (result) {
+				store.dispatch("deleteSession");
+				this.$router.push("/");
+			}
 		}
 	}
 };

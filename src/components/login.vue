@@ -6,8 +6,8 @@
 					background-color="white"
 					solo
 					hide-details
-					v-model="nickname"
-					label="login"
+					v-model="email"
+					label="Email"
 					prepend-inner-icon="fas fa-user-circle"
 				></v-text-field>
 			</v-toolbar-items>
@@ -40,12 +40,15 @@
 
 <script>
 import axios from "axios";
+import store from "../store";
+import cookie from "../helpers/cookie.js";
+
 export default {
 	name: "login",
 	data() {
 		return {
 			password: "",
-			nickname: "",
+			email: "",
 			alert: null
 		};
 	},
@@ -53,17 +56,40 @@ export default {
 	methods: {
 		async login() {
 			let result = await axios.post("auth/login", {
-				login: this.login,
+				email: this.email,
 				password: this.password
 			});
-			if (result) {
-				console.log("do sth");
-			} else {
+			try {
+				if (result) {
+					if (!result.data[0].access_token)
+						this.alert = {
+							state: true,
+							type: "error",
+							content: "Passwords must be the same!"
+						};
+					else {
+						this.alert = null;
+						cookie.setTokenCookie(result.data[0].access_token);
+						let user = await axios.get("auth/user");
+						store.dispatch("setSession", user.data);
+						if (user.data.type === "admin")
+							this.$router.push("admin/logs");
+						else this.$router.push("news");
+					}
+				} else {
+					this.alert = {
+						state: true,
+						type: "error",
+						content: "Something goes wrong! Try again"
+					};
+				}
+			} catch {
 				this.alert = {
 					state: true,
 					type: "error",
 					content: "Something goes wrong! Try again"
 				};
+				return;
 			}
 		}
 	}

@@ -10,7 +10,7 @@ import cookieHelper from './helpers/cookie'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
-Vue.axios.defaults.baseURL = "http://laravel.przedprojekt.com/api/";
+Vue.axios.defaults.baseURL = "http://family.przedprojekt.com/api/";
 Vue.axios.interceptors.request.use(
   (config) => {
     let token = cookieHelper.getTokenCookie();
@@ -18,7 +18,7 @@ Vue.axios.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
-    //config.headers['Access-Control-Allow-Origin'] = '*';
+    config.headers['Access-Control-Allow-Origin'] = '*';
     return config;
   },
   (error) => {

@@ -12,9 +12,7 @@
 		</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<login v-if="!isLogged"></login>
-		<v-btn v-else @click="logout">
-			<span>Logout</span>
-		</v-btn>
+
 		<v-col v-if="!isLogged" sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">
 			<v-dialog v-model="dialog" max-width="450px">
 				<template v-slot:activator="{ on }">
@@ -91,7 +89,6 @@ export default {
 				password: this.password
 			});
 			if (result) {
-				console.log("do sth");
 			} else {
 				this.alert = {
 					state: true,
@@ -103,7 +100,6 @@ export default {
 		async logout() {
 			let result = await axios.get("auth/logout");
 			if (result) {
-				console.log("do sth");
 			} else {
 				this.alert = {
 					state: true,

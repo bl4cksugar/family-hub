@@ -6,24 +6,20 @@ let defaultParams = {
 	expires: '8h',
 };
 
-let testCookie = {};
 
 export default {
 	setTokenCookie(token) {
 		cookie.set(TOKEN, token, defaultParams);
 	},
 	getTokenCookie() {
-		// return cookie.get(TOKEN);
-		testCookie.isAdmin = true;
-		return testCookie;
+		return cookie.get(TOKEN);
 	},
 	deleteTokenCookie() {
-		// var date = new Date();
-		// cookie.set(TOKEN, "", {
-		// 	expires: date.getDate() - 10
-		// });
-		// cookie.delete(TOKEN);
-		testCookie = {};
+		var date = new Date();
+		cookie.set(TOKEN, "", {
+			expires: date.getDate() - 10
+		});
+		cookie.delete(TOKEN);
 	},
 	hasTokenCookie() {
 		if (cookie.get(TOKEN))

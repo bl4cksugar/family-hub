@@ -2,12 +2,13 @@
 	<v-col sm="12" md="6" class="d-flex align-content-center justify-center">
 		<v-card color="transparent" flat max-width="400px">
 			<div class="title">
-				<div class="headline mb-2 text-center">REGISTRATION</div>
+				<div class="headline mb-2 text-center">REGISTER YOUR FAMILLY</div>
+				<v-alert v-if="alert" :type="alert.type">{{alert.content}}</v-alert>
 			</div>
 			<v-form ref="form" v-model="valid" lazy-validation>
 				<v-card-text>
-					<v-row>
-						<v-col sm="6">
+					<!-- <v-row> -->
+					<!-- <v-col sm="6">
 							<v-text-field
 								background-color="rgba(255, 255, 255, 0.9)"
 								color="grey"
@@ -15,18 +16,18 @@
 								v-model="name"
 								label="name"
 							></v-text-field>
-						</v-col>
+					</v-col>-->
 
-						<v-col sm="6">
-							<v-text-field
-								background-color="rgba(255, 255, 255, 0.9)"
-								color="grey"
-								outlined
-								v-model="surname"
-								label="surname"
-							></v-text-field>
-						</v-col>
-					</v-row>
+					<!-- <v-col sm="6"> -->
+					<v-text-field
+						background-color="rgba(255, 255, 255, 0.9)"
+						color="grey"
+						outlined
+						v-model="surname"
+						label="Familly name"
+					></v-text-field>
+					<!-- </v-col> -->
+					<!-- </v-row> -->
 
 					<v-text-field
 						background-color="rgba(255, 255, 255, 0.9)"
@@ -37,13 +38,13 @@
 						:rules="[rules.required, rules.email]"
 					></v-text-field>
 
-					<v-text-field
+					<!-- <v-text-field
 						background-color="rgba(255, 255, 255, 0.9)"
 						color="grey"
 						outlined
 						v-model="login"
 						label="login"
-					></v-text-field>
+					></v-text-field>-->
 
 					<v-text-field
 						background-color="rgba(255, 255, 255, 0.9)"
@@ -70,7 +71,7 @@
 						@keyup.enter="submit"
 					></v-text-field>
 
-					<v-menu
+					<!-- <v-menu
 						ref="menu"
 						v-model="menu"
 						:close-on-content-click="false"
@@ -96,7 +97,7 @@
 							min="1950-01-01"
 							@change="save"
 						></v-date-picker>
-					</v-menu>
+					</v-menu>-->
 
 					<div class="btn text-center">
 						<v-btn @click="signUp" rounded width="200px">SIGN UP</v-btn>
@@ -115,15 +116,10 @@ export default {
 			showPassword: false,
 			password: "",
 			repeatPassword: "",
-			login: "",
-			name: "",
 			surname: "",
 			email: "",
 			valid: null,
 			alert: null,
-			date: null,
-			menu: false,
-
 			rules: {
 				required: value => !!value || "Required.",
 				min: v => v.length >= 8 || "Min 8 characters",
@@ -138,44 +134,50 @@ export default {
 	},
 	components: {},
 
-	watch: {
-		menu(val) {
-			val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
-		}
-	},
+	// watch: {
+	// 	menu(val) {
+	// 		val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
+	// 	}
+	// },
 
 	methods: {
 		async signUp() {
+			this.alert = null;
 			if (this.$refs.form.validate()) {
-				let result = await axios.post("auth/signup", {
-					email: this.email,
-					password: this.password,
-					name: this.surname,
-					password_confirmation: this.repeatPassword
-					// username: this.username,
-					// name: this.name,
-					// surname: this.surname,
-				});
-				console.log(result);
-				if (result) {
-					if (!response.data.successful)
+				try {
+					let result = await axios.post("auth/signup", {
+						email: this.email,
+						password: this.password,
+						password_confirmation: this.repeatPassword,
+						name: this.surname
+					});
+					if (result) {
+						if (!result.data)
+							this.alert = {
+								state: true,
+								type: "error",
+								content: "Passwords must be the same!"
+							};
+						else
+							this.alert = {
+								state: true,
+								type: "success",
+								content: result.data.message
+							};
+					} else {
 						this.alert = {
 							state: true,
 							type: "error",
-							content: "Passwords must be the same!"
+							content: "Something goes wrong! Try again"
 						};
-					else
-						this.alert = {
-							state: true,
-							type: "success",
-							content: "You have successfully registered!"
-						};
-				} else {
+					}
+				} catch {
 					this.alert = {
 						state: true,
 						type: "error",
 						content: "Something goes wrong! Try again"
 					};
+					return;
 				}
 			}
 		},

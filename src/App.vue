@@ -20,6 +20,9 @@ import NavBar from "./components/navbar";
 import BFooter from "./components/footer";
 import sidemenu from "./components/sidemenu";
 import { mapGetters } from "vuex";
+import axios from "axios";
+import store from "./store";
+import cookie from "./helpers/cookie";
 export default {
 	name: "App",
 	data() {
@@ -39,6 +42,14 @@ export default {
 		...mapGetters({
 			isLogged: "user"
 		})
+	},
+	async created() {
+		let verifyCookie = cookie.getTokenCookie();
+		if (verifyCookie) {
+			let result = await axios.get("auth/user");
+			if (result) store.dispatch("setSession", result.data);
+			else store.dispatch("deleteSession");
+		}
 	}
 };
 </script>

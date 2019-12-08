@@ -1,18 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import cookieHelper from './helpers/cookie'
-import {
-  parseJWT
-} from './helpers/parseJwt'
+import cookie from './helpers/cookie'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {
-      name: 'test',
-      admin: true
-    },
+    user: null
   },
   getters: {
     user: state => state.user
@@ -26,17 +20,15 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    setSession({
+    async setSession({
       commit
     }, data) {
-      let user = parseJWT(data.accessToken);
-      cookieHelper.setTokenCookie(data.accessToken);
-      commit('storeUser', user)
+      commit('storeUser', data)
     },
     deleteSession({
       commit
     }) {
-      cookieHelper.deleteTokenCookie();
+      cookie.deleteTokenCookie();
       commit('deleteUser');
     }
   }
