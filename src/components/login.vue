@@ -61,7 +61,7 @@ export default {
 			});
 			try {
 				if (result) {
-					if (!result.data[0].access_token)
+					if (!result.data.access_token)
 						this.alert = {
 							state: true,
 							type: "error",
@@ -69,12 +69,12 @@ export default {
 						};
 					else {
 						this.alert = null;
-						cookie.setTokenCookie(result.data[0].access_token);
+						cookie.setTokenCookie(result.data.access_token);
 						let user = await axios.get("auth/user");
 						store.dispatch("setSession", user.data);
 						if (user.data.type === "admin")
 							this.$router.push("admin/logs");
-						else this.$router.push("news");
+						else this.$router.push("news");					
 					}
 				} else {
 					this.alert = {
