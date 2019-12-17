@@ -1,19 +1,22 @@
 <template>
 	<v-row justify="end">
-		<v-col sm="2">
+		<div class="title">
+			<v-alert v-if="alert" :type="alert.type">{{alert.content}}</v-alert>
+		</div>
+		<v-col sm="3">
 			<v-toolbar-items class="hidden-sm-and-down">
 				<v-text-field
 					background-color="white"
 					solo
 					hide-details
-					v-model="nickname"
-					label="login"
+					v-model="email"
+					label="Email"
 					prepend-inner-icon="fas fa-user-circle"
 				></v-text-field>
 			</v-toolbar-items>
 		</v-col>
 
-		<v-col sm="2" class="hidden-sm-and-down">
+		<v-col sm="3" class="hidden-sm-and-down">
 			<v-toolbar-items>
 				<v-text-field
 					background-color="white"
@@ -23,14 +26,13 @@
 					label="password"
 					type="password"
 					prepend-inner-icon="fas fa-key"
-					@click:append="show1 = !show1"
 				></v-text-field>
 			</v-toolbar-items>
 		</v-col>
 
 		<v-col sm="2" justify-self="center" align-self="center" class="hidden-sm-and-down">
 			<v-btn @click="login">
-				<span>SIGN UP</span>
+				<span>SIGN IN</span>
 			</v-btn>
 		</v-col>
 	</v-row>
@@ -41,23 +43,58 @@
 
 <script>
 import axios from "axios";
+import store from "../store";
+import cookie from "../helpers/cookie.js";
+
 export default {
 	name: "login",
 	data() {
 		return {
-			show1: false,
 			password: "",
-			nickname: ""
+			email: "",
+			alert: null
 		};
 	},
 
 	methods: {
-		login() {
-			let result = axios.post("auth/login", {
-				login: this.login,
+		async login() {
+			let result = await axios.post("auth/login", {
+				email: this.email,
 				password: this.password
 			});
-			result ? console.log("zalogowano") : console.log("błąd");
+			try {
+				if (result) {
+					if (!result.data.access_token)
+						this.alert = {
+							state: true,
+							type: "error",
+							content: "Passwords must be the same!"
+						};
+					else {
+						console.log(result);
+						this.alert = null;
+						cookie.setTokenCookie(result.data.access_token);
+						let user = await axios.get("auth/user");
+						store.dispatch("setSession", user.data);
+						if (user.data.type === "admin")
+							this.$router.push("admin/logs");
+						else this.$router.push("news");					
+					}
+				} else {
+					this.alert = {
+						state: true,
+						type: "error",
+						content: "Something goes wrong! Try again"
+					};
+				}
+			} catch {
+				this.alert = {
+					state: true,
+					type: "error",
+					content: "Something goes wrong! Try again"
+				};
+				return;
+			}
 		}
 	}
 };

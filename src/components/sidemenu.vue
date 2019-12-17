@@ -1,21 +1,38 @@
 <template>
 	<v-col class="sidemenu">
-		<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
-		<v-row>
-			<v-btn to="/admin/users" rounded>USERS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/news" rounded>NEWS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/systemlogs" rounded>SYSTEM LOGS</v-btn>
-		</v-row>
-		<v-row>
-			<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
-		</v-row>
+		<div v-if="isAdmin">
+			<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
+			<v-row>
+				<v-btn to="/admin/userspanel" rounded>USERS</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/news" rounded>NEWS</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/systemlogs" rounded>SYSTEM LOGS</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
+			</v-row>
+		</div>
+		<div v-if="!isAdmin && isLogged">
+			<v-row class="title text-center">USER PANEL</v-row>
+			<v-row>
+				<v-btn to="/profile" rounded>PROFILE</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/tree" rounded>TREE</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/gallery" rounded>GALLERY</v-btn>
+			</v-row>
+			<v-row>
+				<v-btn to="/news" rounded>NEWS</v-btn>
+			</v-row>
+		</div>
 		<v-row>
 			<v-btn
 				@click="signout"
@@ -30,16 +47,30 @@
 
 
 <script>
+import { mapGetters } from "vuex";
+import store from "../store";
+import axios from "axios";
+
 export default {
 	components: {},
-
+	computed: {
+		...mapGetters({
+			entity: "user"
+		}),
+		isAdmin() {
+			return this.entity.type === "admin" ? true : false;
+		},
+		isLogged() {
+			return this.entity ? true : false;
+		}
+	},
 	methods: {
 		signout() {
-			let result = axios.post("addresshere", {
-				login: this.login,
-				password: this.password
-			});
-			result ? console.log("wylogowano") : console.log("błąd");
+			let result = axios.get("addresshere");
+			if (result) {
+				store.dispatch("deleteSession");
+				this.$router.push("/");
+			}
 		}
 	}
 };
@@ -63,13 +94,13 @@ export default {
 }
 
 .row {
-	align-items: center;
+	margin: 20px 0 0 0;
 	justify-content: center;
 }
 
 .v-btn {
 	width: 20vw;
 	min-width: 150px !important;
-	max-width: 400px !important;
+	max-width: 200px !important;
 }
 </style>

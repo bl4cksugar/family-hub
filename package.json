@@ -1,10 +1,12 @@
 {
   "name": "family-hub",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "deploy": "gh-pages -d dist",
+    "gh-pages": "vue-cli-service gh-pages",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
@@ -12,18 +14,21 @@
     "vue": "^2.6.10",
     "vue-axios": "^2.1.5",
     "vue-burger-menu": "^2.0.2",
+    "vue-cookie": "^1.1.4",
     "vue-organization-chart": "^1.1.6",
     "vue-router": "^3.0.3",
     "vuetify": "^2.0.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-unit-jest": "^3.11.0",
+    "@vue/cli-plugin-unit-jest": "^4.1.1",
     "@vue/cli-service": "^3.11.0",
     "@vue/test-utils": "1.0.0-beta.29",
+    "gh-pages": "^2.1.1",
     "node-sass": "^4.9.0",
     "sass": "^1.17.4",
     "sass-loader": "^7.1.0",
+    "vue-cli-plugin-gh-pages": "^1.0.0",
     "vue-cli-plugin-vuetify": "^0.6.3",
     "vue-template-compiler": "^2.6.10",
     "vuetify-loader": "^1.2.2"
@@ -66,5 +71,6 @@
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
     ]
-  }
+  },
+  "homepage": "https://bl4cksugar.github.io/family-hub/"
 }
