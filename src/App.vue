@@ -1,13 +1,13 @@
 <template>
 	<v-app>
-		<nav-bar :isLoginPage="isLoginPage"></nav-bar>
+		<nav-bar></nav-bar>
 		<v-container fluid class="pa-0">
 			<div class="row">
-				<div v-if="!isLoginPage" class="col-xs-12 col-sm-4 px-0">
+				<div v-if="this.isLogged" class="col-xs-12 col-sm-4 col-md-4 col-lg-2 px-0 py-0">
 					<sidemenu></sidemenu>
 				</div>
-				<div class="col-xs-12 px-0" :class="appStyle">
-					<router-view @isLoginPage="changePage"></router-view>
+				<div class="col-xs-12 px-0 py-0" :class="appStyle">
+					<router-view></router-view>
 				</div>
 			</div>
 		</v-container>
@@ -19,12 +19,15 @@
 import NavBar from "./components/navbar";
 import BFooter from "./components/footer";
 import sidemenu from "./components/sidemenu";
-import { METHODS } from "http";
+import { mapGetters } from "vuex";
+import axios from "axios";
+import store from "./store";
+import cookie from "./helpers/cookie";
 export default {
 	name: "App",
 	data() {
 		return {
-			isLoginPage: false
+			hasSidebar: true
 		};
 	},
 	components: {
@@ -34,13 +37,18 @@ export default {
 	},
 	computed: {
 		appStyle() {
-			return this.isLoginPage ? "col-sm-12" : "col-sm-8";
-		}
+			return !this.isLogged ? "col-sm-12" : "col-sm-8 col-md-8 col-lg-10";
+		},
+		...mapGetters({
+			isLogged: "user"
+		})
 	},
-
-	methods: {
-		changePage(state) {
-			this.isLoginPage = state;
+	async created() {
+		let verifyCookie = cookie.getTokenCookie();
+		if (verifyCookie) {
+			let result = await axios.get("auth/user");
+			if (result) store.dispatch("setSession", result.data);
+			else store.dispatch("deleteSession");
 		}
 	}
 };

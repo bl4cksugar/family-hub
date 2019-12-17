@@ -11,14 +11,14 @@
 			</router-link>
 		</v-toolbar-title>
 		<v-spacer></v-spacer>
-		<login v-if="isLoginPage"></login>
-		<v-col sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">
+		<login v-if="!isLogged"></login>
+
+		<v-col v-if="!isLogged" sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">
 			<v-dialog v-model="dialog" max-width="450px">
 				<template v-slot:activator="{ on }">
-					<v-btn v-on="on" @click="login">
+					<v-btn v-on="on">
 						<span>SIGN IN</span>
 					</v-btn>
-					<!-- <v-app-bar-nav-icon color="primary" dark v-on="on"></v-app-bar-nav-icon> -->
 				</template>
 				<v-container
 					style="background:rgba(255,255,255,0.75)"
@@ -31,7 +31,7 @@
 								background-color="white"
 								solo
 								hide-details
-								v-model="nickname"
+								v-model="email"
 								label="login"
 								prepend-inner-icon="fas fa-user-circle"
 							></v-text-field>
@@ -63,32 +63,79 @@
 				
 <script>
 import login from "./login";
+import axios from "axios";
+import { mapGetters } from "vuex";
+import store from "../store";
+import cookie from "../helpers/cookie";
+
 export default {
 	name: "navbar",
-	props: {
-		isLoginPage: {
-			type: Boolean,
-			required: true
-		}
-	},
 	data() {
 		return {
-			nickname: null,
+			email: null,
 			password: null,
+			alert: null,
 			dialog: false
 		};
 	},
 	components: {
 		login: login
 	},
-
+	computed: {
+		...mapGetters({
+			isLogged: "user"
+		})
+	},
 	methods: {
-		login() {
-			let result = axios.post("addresshere", {
-				login: this.login,
+		async login() {
+			let result = await axios.post("auth/login", {
+				email: this.email,
 				password: this.password
 			});
-			result ? console.log("zalogowano") : console.log("błąd");
+			try {
+				if (result) {
+					if (!result.data.access_token)
+						this.alert = {
+							state: true,
+							type: "error",
+							content: "Passwords must be the same!"
+						};
+					else {
+						console.log(result);
+						this.alert = null;
+						cookie.setTokenCookie(result.data.access_token);
+						let user = await axios.get("auth/user");
+						store.dispatch("setSession", user.data);
+						if (user.data.type === "admin")
+							this.$router.push("admin/logs");
+						else this.$router.push("news");
+					}
+				} else {
+					this.alert = {
+						state: true,
+						type: "error",
+						content: "Something goes wrong! Try again"
+					};
+				}
+			} catch {
+				this.alert = {
+					state: true,
+					type: "error",
+					content: "Something goes wrong! Try again"
+				};
+				return;
+			}
+		},
+		async logout() {
+			let result = await axios.get("auth/logout");
+			if (result) {
+			} else {
+				this.alert = {
+					state: true,
+					type: "error",
+					content: "Something goes wrong! Try again"
+				};
+			}
 		}
 	}
 };

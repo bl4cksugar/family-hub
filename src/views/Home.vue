@@ -1,7 +1,7 @@
 <template>
 	<v-container fluid fill-height class="box">
 		<v-row align="center" justify="center">
-			<v-col sm="12" md="6" class="d-flex align-center justify-center px-0 bg">
+			<v-col md="6" class="d-flex align-center justify-center px-0 bg">
 				<div class="background-img">
 					<v-img src="../assets/logofinal.png" class="img" max-width="200px" max-height="400px"></v-img>
 				</div>
@@ -17,9 +17,6 @@ import registration from "../components/registration";
 export default {
 	components: {
 		registration
-	},
-	created() {
-		this.$emit("isLoginPage", true);
 	}
 };
 </script>
@@ -45,7 +42,7 @@ export default {
 .bg {
 	background: url("../assets/bg1.png");
 	background-size: 140vh;
-	min-height: 90vh;
+	min-height: 95vh;
 }
 
 .btn {
