@@ -78,7 +78,7 @@ export default {
 						store.dispatch("setSession", user.data);
 						if (user.data.type === "admin")
 							this.$router.push("admin/logs");
-						else this.$router.push("news");
+						else this.$router.push("news");					
 					}
 				} else {
 					this.alert = {
