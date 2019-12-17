@@ -1,5 +1,8 @@
 <template>
 	<v-row justify="end">
+		<div class="title">
+			<v-alert v-if="alert" :type="alert.type">{{alert.content}}</v-alert>
+		</div>
 		<v-col sm="3">
 			<v-toolbar-items class="hidden-sm-and-down">
 				<v-text-field
@@ -61,15 +64,16 @@ export default {
 			});
 			try {
 				if (result) {
-					if (!result.data[0].access_token)
+					if (!result.data.access_token)
 						this.alert = {
 							state: true,
 							type: "error",
 							content: "Passwords must be the same!"
 						};
 					else {
+						console.log(result);
 						this.alert = null;
-						cookie.setTokenCookie(result.data[0].access_token);
+						cookie.setTokenCookie(result.data.access_token);
 						let user = await axios.get("auth/user");
 						store.dispatch("setSession", user.data);
 						if (user.data.type === "admin")

@@ -16,7 +16,7 @@
 		<v-col v-if="!isLogged" sm="2" justify-self="center" align-self="center" class="hidden-md-and-up">
 			<v-dialog v-model="dialog" max-width="450px">
 				<template v-slot:activator="{ on }">
-					<v-btn v-on="on" @click="login">
+					<v-btn v-on="on">
 						<span>SIGN IN</span>
 					</v-btn>
 				</template>
@@ -31,7 +31,7 @@
 								background-color="white"
 								solo
 								hide-details
-								v-model="nickname"
+								v-model="email"
 								label="login"
 								prepend-inner-icon="fas fa-user-circle"
 							></v-text-field>
@@ -63,14 +63,18 @@
 				
 <script>
 import login from "./login";
+import axios from "axios";
 import { mapGetters } from "vuex";
+import store from "../store";
+import cookie from "../helpers/cookie";
 
 export default {
 	name: "navbar",
 	data() {
 		return {
-			nickname: null,
+			email: null,
 			password: null,
+			alert: null,
 			dialog: false
 		};
 	},
@@ -85,16 +89,41 @@ export default {
 	methods: {
 		async login() {
 			let result = await axios.post("auth/login", {
-				login: this.login,
+				email: this.email,
 				password: this.password
 			});
-			if (result) {
-			} else {
+			try {
+				if (result) {
+					if (!result.data.access_token)
+						this.alert = {
+							state: true,
+							type: "error",
+							content: "Passwords must be the same!"
+						};
+					else {
+						console.log(result);
+						this.alert = null;
+						cookie.setTokenCookie(result.data.access_token);
+						let user = await axios.get("auth/user");
+						store.dispatch("setSession", user.data);
+						if (user.data.type === "admin")
+							this.$router.push("admin/logs");
+						else this.$router.push("news");
+					}
+				} else {
+					this.alert = {
+						state: true,
+						type: "error",
+						content: "Something goes wrong! Try again"
+					};
+				}
+			} catch {
 				this.alert = {
 					state: true,
 					type: "error",
 					content: "Something goes wrong! Try again"
 				};
+				return;
 			}
 		},
 		async logout() {

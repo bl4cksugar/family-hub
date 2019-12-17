@@ -21,16 +21,16 @@
 		<div v-if="!isAdmin && isLogged">
 			<v-row class="title text-center">USER PANEL</v-row>
 			<v-row>
-				<v-btn to="/panel/profile" rounded>PROFILE</v-btn>
+				<v-btn to="/profile" rounded>PROFILE</v-btn>
 			</v-row>
 			<v-row>
-				<v-btn to="/panel/tree" rounded>TREE</v-btn>
+				<v-btn to="/tree" rounded>TREE</v-btn>
 			</v-row>
 			<v-row>
-				<v-btn to="/panel/gallery" rounded>GALLERY</v-btn>
+				<v-btn to="/gallery" rounded>GALLERY</v-btn>
 			</v-row>
 			<v-row>
-				<v-btn to="/panel/news" rounded>NEWS</v-btn>
+				<v-btn to="/news" rounded>NEWS</v-btn>
 			</v-row>
 		</div>
 		<v-row>
