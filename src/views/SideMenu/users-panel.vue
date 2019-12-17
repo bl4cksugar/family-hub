@@ -26,19 +26,7 @@
 										<v-container>
 											<v-row>
 												<v-col cols="12" sm="6" md="4">
-													<v-text-field v-model="editedItem.name" label="Name"></v-text-field>
-												</v-col>
-												<v-col cols="12" sm="6" md="4">
-													<v-text-field v-model="editedItem.surname" label="Surname"></v-text-field>
-												</v-col>
-												<v-col cols="12" sm="6" md="4">
-													<v-text-field v-model="editedItem.date" label="Birthday"></v-text-field>
-												</v-col>
-												<v-col cols="12" sm="6" md="4">
-													<v-text-field v-model="editedItem.mail" label="Email"></v-text-field>
-												</v-col>
-												<v-col cols="12" sm="6" md="4">
-													<v-checkbox color="green" v-model="editedItem.boolean" label="IsVerified"></v-checkbox>
+													<v-text-field v-model="editedItem.email" label="Email"></v-text-field>
 												</v-col>
 											</v-row>
 										</v-container>
@@ -53,8 +41,8 @@
 							</v-dialog>
 						</v-toolbar>
 					</template>
-					<template v-slot:item.boolean="{ item }">
-						<v-icon>{{ item.boolean ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline" }}</v-icon>
+					<template v-slot:item.active="{ item }">
+						<v-icon>{{ item.active ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline" }}</v-icon>
 					</template>
 					<template v-slot:item.action="{ item }">
 						<v-btn class="mx-2" small depressed fab dark color="green" @click="editItem(item)">
@@ -72,6 +60,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
 	data() {
 		return {
@@ -86,11 +75,9 @@ export default {
 					value: "number"
 				},
 
-				{ text: "name", value: "name" },
-				{ text: "surname", value: "surname" },
-				{ text: "date of birth", value: "date" },
-				{ text: "e-mail", value: "mail" },
-				{ text: " IsVerified", value: "boolean" },
+				{ text: "email", value: "email" },
+				{ text: "surname", value: "prefix" },
+				{ text: " IsVerified", value: "active" },
 				{ text: " Actions", value: "action" }
 			],
 			editedIndex: -1,
@@ -108,89 +95,16 @@ export default {
 				mail: 0,
 				boolean: false
 			},
-			users: [
-				{
-					number: "1",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "2",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: false
-				},
-				{
-					number: "3",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "4",
-					name: "Joe",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "5",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "6",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "7",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "8",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "9",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				},
-				{
-					number: "10",
-					name: "John",
-					surname: "Smith",
-					date: "12-06-97",
-					mail: "jsmith@mail.com",
-					boolean: true
-				}
-			]
+
+			users: []
 		};
+	},
+	async created() {
+		let result = await axios.get("/auth/user/all");
+		console.log(result);
+		if (result) {
+			this.users = result.data.data;
+		}
 	},
 	computed: {
 		formTitle() {
@@ -209,10 +123,13 @@ export default {
 			this.dialog = true;
 		},
 
-		deleteItem(item) {
+		async deleteItem(item) {
 			const index = this.users.indexOf(item);
 			confirm("Are you sure you want to delete this item?") &&
 				this.users.splice(index, 1);
+			let result = await axios.post("/auth/user/deactive", {
+				id: item.id
+			});
 		},
 
 		close() {
@@ -223,10 +140,18 @@ export default {
 			}, 300);
 		},
 
-		save() {
+		async save() {
 			if (this.editedIndex > -1) {
+				console.log("1");
 				Object.assign(this.users[this.editedIndex], this.editedItem);
+				console.log(this.editedItem);
+				let result = await axios.put(
+					"/auth/user/update",
+					this.editedItem
+				);
+				console.log(result);
 			} else {
+				console.log("2");
 				this.users.push(this.editedItem);
 			}
 			this.close();

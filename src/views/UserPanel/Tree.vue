@@ -1,7 +1,6 @@
 <template>
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
-			<button id="btn">Group</button>
 			<div id="tree"></div>
 		</v-col>
 	</v-container>
@@ -9,6 +8,8 @@
 
 <script>
 export default {
+	components: {},
+
 	data() {
 		return {
 			familly: [
@@ -191,4 +192,7 @@ export default {
 </script>
 
 <style scoped>
+#btn {
+	float: left;
+}
 </style>

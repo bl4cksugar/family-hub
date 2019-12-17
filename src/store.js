@@ -14,6 +14,7 @@ export default new Vuex.Store({
   mutations: {
     storeUser(state, data) {
       state.user = data
+      // state.user.type = "admin"
     },
     deleteUser(state) {
       state.user = null

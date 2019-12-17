@@ -7,7 +7,7 @@ import LandingPage from './views/Home.vue'
 
 import UsersPanel from './views/SideMenu/users-panel.vue'
 import FamiliesPanel from './views/SideMenu/families-panel.vue'
-import NewsPanel from './views/SideMenu/families-panel.vue'
+import NewsPanel from './views/SideMenu/news-panel.vue'
 import LogsPanel from './views/SideMenu/logs-panel.vue'
 import AffienitiesPanel from './views/SideMenu/affinities-panel.vue'
 
