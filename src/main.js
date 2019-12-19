@@ -40,8 +40,8 @@ Vue.axios.interceptors.response.use(response => {
       }
     };
   } else
-    store.dispatch('deleteSession');
-  return Promise.reject(error.response)
+    // store.dispatch('deleteSession');
+    return Promise.reject(error.response)
 });
 
 

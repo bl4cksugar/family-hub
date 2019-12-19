@@ -72,12 +72,12 @@ export default {
 					text: "ID",
 					align: "left",
 					sortable: false,
-					value: "number"
+					value: "id"
 				},
 
-				{ text: "tilte", value: "title" }
-
-				// { text: " Actions", value: "action" }
+				{ text: "tilte", value: "title" },
+				{ text: "description", value: "description" },
+				{ text: " Actions", value: "action" }
 			],
 			editedIndex: -1,
 			editedItem: {
@@ -99,7 +99,7 @@ export default {
 		};
 	},
 	async created() {
-		let result = await axios.get("/auth/news/all");
+		let result = await axios.get("auth/admin/news/all");
 		console.log(result);
 		if (result) {
 			this.news = result.data.data;

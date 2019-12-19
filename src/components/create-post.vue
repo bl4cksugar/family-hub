@@ -1,7 +1,18 @@
 <template>
 	<v-form ref="form" v-model="valid" lazy-validation class="center">
+		<v-text-field
+			v-model="title"
+			:rules="titleRules"
+			class="pt-5"
+			label="Title"
+			solo
+			required
+			name="input-7-4"
+			align="left"
+		></v-text-field>
+
 		<v-textarea
-			v-model="content"
+			v-model="description"
 			:rules="contentRules"
 			label="What happend? Type your post"
 			solo
@@ -9,7 +20,7 @@
 			name="input-7-4"
 		></v-textarea>
 
-		<v-btn @click="submit" :disable="!valid" round>send</v-btn>
+		<v-btn @click="submit" :disable="!valid" rounded>send</v-btn>
 	</v-form>
 </template>
 
@@ -20,41 +31,30 @@ export default {
 	data: () => ({
 		isVisible: true,
 		valid: true,
-		content: "",
-		contentRules: [v => !!v || "Post content is required"],
-		UserId: "",
-		UserName: "",
-		AvatarUrl: ""
+		title: "",
+		description: "",
+		titleRules: [t => !!t || "Title is required"],
+		contentRules: [v => !!v || "Post content is required"]
 	}),
 	methods: {
-		submit() {
-			var that = this;
-
+		async submit() {
 			if (this.$refs.form.validate()) {
-				that.UserId = $cookies.get("IsLoggedCookie").id;
-				that.UserName = $cookies.get("IsLoggedCookie").userName;
-				that.AvatarUrl = $cookies.get("IsLoggedCookie").avatarUrl;
-				axios
-					.post("posts/createpost", {
-						UserId: this.UserId,
-						UserName: this.UserName,
-						AvatarUrl: this.AvatarUrl,
-						content: this.content
-					})
-					.then(function(response) {
-						console.log(response);
-						that.$emit("postCreated");
-					});
+				let result = await axios.post("auth/news/add", {
+					title: this.title,
+					description: this.description
+				});
+				console.log(result);
+				this.$emit("newsCreated");
 			}
 		},
 		changeVisiblity() {
 			if (this.isVisible) this.isVisible = false;
 			else this.isVisible = true;
-		},
-		photoSet(fileUrl) {
-			console.log(fileUrl);
-			this.ImgUrl = fileUrl;
 		}
+		// photoSet(fileUrl) {
+		// 	console.log(fileUrl);
+		// 	this.ImgUrl = fileUrl;
+		// }
 	},
 	components: {}
 };
@@ -65,7 +65,6 @@ export default {
 .v-textarea {
 	width: 100%;
 	background: none;
-	padding-top: 40px;
 }
 .v-form {
 	padding-bottom: 20px;
@@ -75,7 +74,7 @@ visiblity-class {
 }
 .center {
 	max-width: 800px;
-	display: grid;
+
 	justify-items: center;
 }
 </style>

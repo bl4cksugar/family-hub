@@ -2,9 +2,9 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<div class="centring-posts">
-				<create-post @postCreated="refreshPosts"></create-post>
-				<posts-list :userProfile="user" :currentPosts="postsFilter" :refreshPost="refreshPost"></posts-list>
+				<create-post @newsCreated="refreshPost"></create-post>
 			</div>
+			<posts-list :userProfile="user" :currentPosts="postsFilter" :refreshPost="refresh"></posts-list>
 		</v-col>
 	</v-container>
 </template>
@@ -19,17 +19,13 @@ export default {
 		user: {
 			id: ""
 		},
-		refreshPost: 0,
+		refresh: false,
 		postsFilter: "getsomeposts"
 	}),
-	created: function() {
-		var that = this;
-		that.user = $cookies.get("IsLoggedCookie");
-	},
+	created() {},
 	methods: {
-		refreshPosts() {
-			var that = this;
-			that.refreshPost++;
+		refreshPost() {
+			this.refresh = true;
 		}
 	},
 	components: {

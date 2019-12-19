@@ -72,7 +72,7 @@ export default {
 					text: "ID",
 					align: "left",
 					sortable: false,
-					value: "number"
+					value: "id"
 				},
 
 				{ text: "email", value: "email" },

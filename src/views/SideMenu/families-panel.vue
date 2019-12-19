@@ -6,7 +6,9 @@
 					<template v-slot:top>
 						<v-toolbar flat color="white">
 							<v-toolbar-title>Families</v-toolbar-title>
+
 							<v-divider class="mx-4" inset vertical></v-divider>
+
 							<v-spacer></v-spacer>
 							<v-text-field
 								v-model="search"
@@ -26,7 +28,7 @@
 										<v-container>
 											<v-row>
 												<v-col cols="12" sm="6" md="4">
-													<v-text-field v-model="editedItem.founder_id" label="Name"></v-text-field>
+													<v-text-field v-model="editedItem.founder_id" label="Founder Id"></v-text-field>
 												</v-col>
 											</v-row>
 										</v-container>
@@ -40,15 +42,16 @@
 								</v-card>
 							</v-dialog>
 						</v-toolbar>
+						<v-alert v-if="alert" :type="alert.type">{{alert.content}}</v-alert>
 					</template>
 
 					<template v-slot:item.action="{ item }">
 						<v-btn class="mx-2" small depressed fab dark color="green" @click="editItem(item)">
 							<v-icon dark small>mdi-pencil</v-icon>
 						</v-btn>
-						<v-btn class="mx-2" small depressed fab dark color="red" @click="deleteItem(item)">
+						<!-- <v-btn class="mx-2" small depressed fab dark color="red" @click="deleteItem(item)">
 							<v-icon dark small>mdi-delete</v-icon>
-						</v-btn>
+						</v-btn>-->
 					</template>
 					<template v-slot:no-data>NO DATA</template>
 				</v-data-table>
@@ -64,6 +67,7 @@ export default {
 		return {
 			test: true,
 			dialog: false,
+			alert: null,
 			search: "",
 			headers: [
 				{
@@ -74,8 +78,8 @@ export default {
 				},
 
 				{ text: "name", value: "name" },
-				{ text: " founder", value: "founder_id" }
-				// { text: " Actions", value: "action" }
+				{ text: " founder", value: "founder_id" },
+				{ text: " Actions", value: "action" }
 			],
 			editedIndex: -1,
 			editedItem: {
@@ -143,10 +147,21 @@ export default {
 				console.log("1");
 				Object.assign(this.families[this.editedIndex], this.editedItem);
 				console.log(this.editedItem);
-				let result = await axios.put(
-					"/auth/family/update",
-					this.editedItem
-				);
+				let result = await axios
+					.put("auth/family/update", {
+						id: this.editedItem.id,
+						name: this.editedItem.name,
+						founder_id: this.editedItem.founder_id
+					})
+					.catch(error => {
+						console.log(error);
+						this.alert = {
+							state: true,
+							type: "error",
+							content:
+								"This founder ID is already used in other family!"
+						};
+					});
 				console.log(result);
 			} else {
 				console.log("2");
