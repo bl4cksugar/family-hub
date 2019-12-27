@@ -3,7 +3,7 @@
 		<div v-if="isAdmin">
 			<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
 			<v-row>
-				<v-btn to="/admin/userspanel" rounded>USERS</v-btn>
+				<v-btn to="/admin/users" rounded>USERS</v-btn>
 			</v-row>
 			<v-row>
 				<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
@@ -21,7 +21,7 @@
 		<div v-if="!isAdmin && isLogged">
 			<v-row class="title text-center">USER PANEL</v-row>
 			<v-row>
-				<v-btn to="/profile" rounded>PROFILE</v-btn>
+				<v-btn :to="'./profile/'+ entity.id" rounded>PROFILE</v-btn>
 			</v-row>
 			<v-row>
 				<v-btn to="/tree" rounded>TREE</v-btn>
