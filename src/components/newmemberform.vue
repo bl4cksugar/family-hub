@@ -1,6 +1,6 @@
 <template>
 	<v-row justify="center">
-		<v-dialog v-model="dialog" persistent max-width="600px">
+		<v-dialog v-model="dialog" max-width="600px">
 			<template v-slot:activator="{ on }">
 				<v-btn color="green" dark v-on="on">ADD MEMBER</v-btn>
 			</template>
@@ -49,8 +49,8 @@
 
 								<!-- <v-text-field label="Date of death"></v-text-field> -->
 								<v-menu
-									ref="menu"
-									v-model="menu"
+									ref="menu2"
+									v-model="menu2"
 									:close-on-content-click="false"
 									transition="scale-transition"
 									offset-y
@@ -99,14 +99,20 @@
 <script>
 export default {
 	data: () => ({
-		dialog: false
+		dialog: false,
+		menu: null,
+		menu2: null,
+		death: null,
+		date: null
 	}),
 	methods: {
 		save(date) {
 			this.$refs.menu.save(date);
 		},
 		savedeath(death) {
-			this.$refs.menu.savedeath(death);
+			console.log("dupa");
+			this.$refs.menu2.save(death);
+			// this.$refs.menu.savedeath(death);
 		}
 	}
 };

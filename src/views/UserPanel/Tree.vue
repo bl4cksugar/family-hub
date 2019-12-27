@@ -1,12 +1,14 @@
 <template>
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
+			<new-member-form></new-member-form>
 			<div id="tree"></div>
 		</v-col>
 	</v-container>
 </template>
 
 <script>
+import NewMemberForm from "../../components/newmemberform";
 export default {
 	components: {},
 
@@ -15,184 +17,146 @@ export default {
 			familly: [
 				{
 					id: 1,
-					tags: ["f1"],
-					name: "King George VI",
+					partnerId: 2,
+					name: "Jan Kowalski",
+					birthDay: "12-12-2019",
+					deathDay: "13-12-2019",
 					img: "https://balkangraph.com/js/img/f1.png"
 				},
 				{
 					id: 2,
-					tags: ["f1"],
-					name: "Queen Elizabeth",
-					title: "The Queen Mother",
+					partnerId: 1,
+					name: "Barbara Kowalska",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f2.png"
 				},
 				{
 					id: 3,
-					tags: ["f2"],
+					partnerId: 4,
 					pid: 2,
-					name: "Prince Philip",
-					title: "Duke of Edinburgh",
+					name: "Janusz Kowalski",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f3.png"
 				},
 				{
 					id: 4,
-					tags: ["f2"],
-					pid: 2,
-					name: "Queen Elizabeth II",
+					partnerId: 3,
+					name: "Grażyna Kowalska",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f5.png"
 				},
 				{
 					id: 5,
 					pid: 2,
-					name: "Princess Margaret",
+					partnerId: null,
+					name: "Krzysztof Kowalski",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f6.png"
 				},
 				{
-					id: 6,
-					tags: ["f3"],
-					pid: 4,
-					name: "Camila",
-					title: "Duchess of Cornwall",
-					img: "https://balkangraph.com/js/img/f7.png"
-				},
-				{
 					id: 7,
-					tags: ["f3"],
 					pid: 4,
-					name: "Charles",
-					title: "Prince of Wales",
+					partnerId: 8,
+					name: "Seba Kowalski",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f8.png"
 				},
 				{
 					id: 8,
-					tags: ["f3"],
-					pid: 4,
-					name: "Diana",
-					title: "Princess of Wales",
+					partnerId: 7,
+					name: "Karyna Kowalska",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f9.png"
 				},
 				{
 					id: 9,
 					pid: 4,
-					name: "Anne",
-					title: "Princess Royal",
+					name: "Łysy Kowalski",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f10.png"
 				},
 				{
 					id: 10,
 					pid: 4,
-					name: "Prince Andrew",
-					title: "Duke of York",
+					name: "Gruby Kowalski",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f11.png"
 				},
 				{
-					id: 11,
-					pid: 4,
-					name: "Prince Edward",
-					title: "Earl of Wessex",
-					img: "https://balkangraph.com/js/img/f12.png"
-				},
-				{
 					id: 12,
-					tags: ["f4"],
 					pid: 7,
-					name: "Catherine",
-					title: "Duchess of Cambridge",
+					partnerId: 13,
+					name: "Brajan Kowalski",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f13.png"
 				},
 				{
 					id: 13,
-					tags: ["f4"],
-					pid: 7,
-					name: "Prince William",
-					title: "Duch of Cambridge",
+					partnerId: 12,
+					name: "Dżesika Kowalski",
+					birthDay: "12-12-2019",
 					img: "https://balkangraph.com/js/img/f14.png"
-				},
-				{
-					id: 14,
-					tags: ["f7"],
-					pid: 7,
-					name: "Prince Harry",
-					img: "https://balkangraph.com/js/img/f15.png"
-				},
-				{
-					id: 15,
-					tags: ["f7"],
-					pid: 7,
-					name: "Meghan Markle",
-					img: "https://balkangraph.com/js/img/f16.png"
-				},
-				{
-					id: 16,
-					pid: 12,
-					name: "Prince George of Cambridge",
-					img: "https://balkangraph.com/js/img/f17.png"
-				},
-				{
-					id: 17,
-					pid: 12,
-					name: "Prince Charlotte of Cambridge",
-					img: "https://balkangraph.com/js/img/f18.png"
-				},
-				{
-					id: 18,
-					pid: 12,
-					name: "Prince Louis of Cambridge",
-					img: "https://balkangraph.com/js/img/f19.png"
 				}
 			],
-			familyGroupTag: {},
+			familyGroupTag: {
+				group: true,
+				template: "group_grey",
+				groupState: OrgChart.EXPAND
+			},
 			tags: {}
 		};
 	},
 	methods: {
 		newGroup() {
-			this.tags[
-				`f${Object.keys(this.tags).length + 1}`
-			] = this.familyGroupTag;
+			const tagNumber = Object.keys(this.tags).length + 1;
+			this.tags[`marriage${tagNumber}`] = this.familyGroupTag;
+			return `marriage${tagNumber}`;
+		},
+		groupRender() {
+			this.familly.forEach(item => {
+				if (item.partnerId && !item.tags) {
+					const group = this.newGroup();
+					item.tags = [group];
+					const partner = this.familly.find(
+						member => member.id === item.partnerId
+					);
+					partner.tags = [group];
+				}
+			});
 		}
 	},
 	mounted() {
-		this.familyGroupTag = {
-			group: true,
-			template: "group_grey",
-			groupState: OrgChart.EXPAND
-		};
+		this.groupRender();
 
-		this.tags = {
-			f1: this.familyGroupTag,
-			f2: this.familyGroupTag,
-			f3: this.familyGroupTag,
-			f4: this.familyGroupTag,
-			f5: this.familyGroupTag,
-			f6: this.familyGroupTag
-		};
-
-		this.newGroup();
+		OrgChart.templates.diva.field_2 =
+			'<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="10" y="100" text-anchor="middle">{val}</text>';
+		OrgChart.templates.diva.field_3 =
+			'<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="100" y="160" text-anchor="middle">{val}</text>';
 
 		var chart = new OrgChart(document.getElementById("tree"), {
 			template: "diva",
 			nodeMouseClick: OrgChart.action.details,
 			nodeMenu: {
 				details: { text: "Details" },
-				add: { text: "Add New" },
 				edit: { text: "Edit" },
 				remove: { text: "Remove" }
 			},
 			nodeBinding: {
 				field_0: "name",
-				field_1: "title",
+				field_1: "birthDay",
+				field_2: "id",
+				field_3: "deathDay",
 				img_0: "img"
 			},
 			tags: this.tags,
 			nodes: this.familly
 		});
+	},
+	components: {
+		NewMemberForm
 	}
 };
 </script>
 
 <style scoped>
-#btn {
-	float: left;
-}
 </style>

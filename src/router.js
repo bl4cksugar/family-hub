@@ -28,90 +28,90 @@ import {
 Vue.use(Router)
 
 const router = new Router({
-  // mode: 'history',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
-      path: '/',
-      name: 'landing-page',
-      component: LandingPage
-    },
-    {
-      path: '/admin/logs',
-      name: 'logs-panel',
-      component: LogsPanel,
-      meta: {
-        requiresAdmin: true,
+    path: '/',
+    name: 'landing-page',
+    component: LandingPage
+  },
+  {
+    path: '/admin/logs',
+    name: 'logs-panel',
+    component: LogsPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/users',
-      name: 'users-panel',
-      component: UsersPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/users',
+    name: 'users-panel',
+    component: UsersPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/families',
-      name: 'families-panel',
-      component: FamiliesPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/families',
+    name: 'families-panel',
+    component: FamiliesPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/news',
-      name: 'news-panel',
-      component: NewsPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/news',
+    name: 'news-panel',
+    component: NewsPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/affinities',
-      name: 'affienities-panel',
-      component: AffienitiesPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/affinities',
+    name: 'affienities-panel',
+    component: AffienitiesPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/news',
-      name: 'news',
-      component: News,
-      meta: {
-        requiresAuth: true,
-      }
-    },
-    {
-      path: '/tree',
-      name: 'tree',
-      component: Tree,
-      meta: {
-        requiresAuth: true,
-      }
-    },
-    {
-      path: '/gallery',
-      name: 'gallery',
-      component: Gallery,
-      meta: {
-        requiresAuth: true,
-      }
-    },
-    {
-      path: '/profile/:id',
-      name: 'profile',
-      component: Profile,
-      meta: {
-        requiresAuth: true,
-      }
-    },
+    }
+  },
+  {
+    path: '/news',
+    name: 'news',
+    component: News,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/tree',
+    name: 'tree',
+    component: Tree,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/gallery',
+    name: 'gallery',
+    component: Gallery,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/profile/:id',
+    name: 'profile',
+    component: Profile,
+    meta: {
+      requiresAuth: true,
+    }
+  },
 
   ]
 })
