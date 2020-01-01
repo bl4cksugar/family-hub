@@ -102,7 +102,6 @@ export default {
 	},
 	async created() {
 		let result = await axios.get("/auth/family/all");
-		console.log(result);
 
 		if (result) {
 			this.families = result.data.data;
@@ -144,9 +143,7 @@ export default {
 
 		async save() {
 			if (this.editedIndex > -1) {
-				console.log("1");
 				Object.assign(this.families[this.editedIndex], this.editedItem);
-				console.log(this.editedItem);
 				let result = await axios
 					.put("auth/family/update", {
 						id: this.editedItem.id,
@@ -154,7 +151,6 @@ export default {
 						founder_id: this.editedItem.founder_id
 					})
 					.catch(error => {
-						console.log(error);
 						this.alert = {
 							state: true,
 							type: "error",
@@ -162,9 +158,7 @@ export default {
 								"This founder ID is already used in other family!"
 						};
 					});
-				console.log(result);
 			} else {
-				console.log("2");
 				this.families.push(this.editedItem);
 			}
 			this.close();

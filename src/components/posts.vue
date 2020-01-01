@@ -57,7 +57,6 @@ export default {
 	methods: {
 		async getPosts() {
 			let result = await axios.get("auth/news/all");
-			console.log(result);
 			if (result) {
 				this.news = result.data.data;
 			}

@@ -89,7 +89,6 @@ export default {
 	},
 	methods: {
 		async login() {
-			console.log(this.$refs.form.validate());
 			if (this.$refs.form.validate()) {
 				let result = await axios
 					.post("auth/login", {
@@ -97,14 +96,12 @@ export default {
 						password: this.password
 					})
 					.catch(error => {
-						console.log(error);
 						this.alert = {
 							state: true,
 							type: "error",
 							content: "Passwords must be the same!"
 						};
 					});
-				console.log("test");
 				try {
 					if (result) {
 						if (!result.data.access_token)
@@ -114,14 +111,31 @@ export default {
 								content: "Passwords must be the same!"
 							};
 						else {
-							console.log(result);
 							this.alert = null;
 							cookie.setTokenCookie(result.data.access_token);
 							let user = await axios.get("auth/user");
 							store.dispatch("setSession", user.data);
-							if (user.data.type === "admin")
-								this.$router.push("admin/logs");
-							else this.$router.push("news");
+							let memberInfo = await axios.get(
+								"/auth/member/info"
+							);
+							if (memberInfo.status === 200)
+								store.dispatch(
+									"setMember",
+									memberInfo.data.data[0]
+								);
+							if (
+								memberInfo.data.data[0].first_name.length > 0 &&
+								memberInfo.data.data[0].last_name.length > 0
+							) {
+								if (user.data.type === "admin")
+									this.$router.push("admin/logs");
+								else this.$router.push("news");
+							} else {
+								this.$router.push({
+									path: "profile",
+									params: { fromRegister: true }
+								});
+							}
 						}
 					} else {
 						this.alert = {

@@ -43,7 +43,6 @@ export default {
 					title: this.title,
 					description: this.description
 				});
-				console.log(result);
 				this.$emit("newsCreated");
 			}
 		},

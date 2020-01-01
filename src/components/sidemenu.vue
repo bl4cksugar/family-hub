@@ -21,7 +21,7 @@
 		<div v-if="!isAdmin && isLogged">
 			<v-row class="title text-center">USER PANEL</v-row>
 			<v-row>
-				<v-btn :to="'./profile/'+ entity.id" rounded>PROFILE</v-btn>
+				<v-btn to="/profile" rounded>PROFILE</v-btn>
 			</v-row>
 			<v-row>
 				<v-btn to="/tree" rounded>TREE</v-btn>
@@ -65,8 +65,8 @@ export default {
 		}
 	},
 	methods: {
-		signout() {
-			let result = axios.get("addresshere");
+		async signout() {
+			let result = await axios.get("auth/logout");
 			if (result) {
 				store.dispatch("deleteSession");
 				this.$router.push("/");

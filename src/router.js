@@ -3,8 +3,6 @@ import Router from 'vue-router'
 
 import LandingPage from './views/Home.vue'
 
-
-
 import UsersPanel from './views/SideMenu/users-panel.vue'
 import FamiliesPanel from './views/SideMenu/families-panel.vue'
 import NewsPanel from './views/SideMenu/news-panel.vue'
@@ -20,9 +18,6 @@ import Profile from './views/UserPanel/Profile.vue'
 import cookieHelper from './helpers/cookie'
 import store from "./store";
 import axios from 'axios'
-import {
-  newExpression
-} from '@babel/types'
 
 
 Vue.use(Router)
@@ -105,7 +100,7 @@ const router = new Router({
     }
   },
   {
-    path: '/profile/:id',
+    path: '/profile',
     name: 'profile',
     component: Profile,
     meta: {
@@ -124,6 +119,9 @@ router.beforeEach(async (to, from, next) => {
     let result = await axios.get("auth/user");
     if (result) {
       store.dispatch("setSession", result.data);
+      let memberInfo = await axios.get("/auth/member/info");
+      if (memberInfo.status === 200)
+        store.dispatch("setMember", memberInfo.data.data[0]);
       user = result.data
     } else store.dispatch("deleteSession");
   }

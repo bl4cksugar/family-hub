@@ -12,13 +12,15 @@
 					<v-container>
 						<v-row>
 							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Name*" required></v-text-field>
+								<v-text-field v-model="first_name" label="First Name*" required></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Surname*" required></v-text-field>
+								<v-text-field v-model="middle_name" label="Last Name*" required></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="6" md="4">
-								<!-- <v-text-field label="Date of birth*" required></v-text-field> -->
+								<v-text-field v-model="last_name" label="Last Name*" required></v-text-field>
+							</v-col>
+							<v-col cols="12" sm="6" md="4">
 								<v-menu
 									ref="menu"
 									v-model="menu"
@@ -32,7 +34,7 @@
 											color="grey"
 											background-color="rgba(255, 255, 255, 0.9)"
 											v-model="date"
-											label="Birthday date*"
+											label="Date of birth*"
 											required
 											readonly
 											v-on="on"
@@ -46,8 +48,6 @@
 										@change="save"
 									></v-date-picker>
 								</v-menu>
-
-								<!-- <v-text-field label="Date of death"></v-text-field> -->
 								<v-menu
 									ref="menu2"
 									v-model="menu2"
@@ -76,7 +76,7 @@
 								</v-menu>
 							</v-col>
 							<v-col cols="12">
-								<v-text-field label="Email"></v-text-field>
+								<v-text-field v-model="email" label="Email"></v-text-field>
 							</v-col>
 
 							<v-col cols="12" sm="6">
@@ -89,7 +89,7 @@
 				<v-card-actions>
 					<v-spacer></v-spacer>
 					<v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-					<v-btn color="blue darken-1" text @click="dialog = false">Save</v-btn>
+					<v-btn color="blue darken-1" text @click="submit">Save</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -97,20 +97,35 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
 	data: () => ({
+		first_name: null,
+		middle_name: null,
+		last_name: null,
+		email: null,
+		date: null,
+		death: null,
 		dialog: false,
 		menu: null,
-		menu2: null,
-		death: null,
-		date: null
+		menu2: null
 	}),
 	methods: {
+		async submit() {
+			let result = await axios.post("auth/member/add", {
+				first_name: this.first_name,
+				middle_name: this.middle_name,
+				last_name: this.last_name,
+				email: this.email,
+				day_of_birth: this.date,
+				day_of_death: this.death,
+				partner_id: null
+			});
+		},
 		save(date) {
 			this.$refs.menu.save(date);
 		},
 		savedeath(death) {
-			console.log("dupa");
 			this.$refs.menu2.save(death);
 			// this.$refs.menu.savedeath(death);
 		}

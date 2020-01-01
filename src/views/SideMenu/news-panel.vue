@@ -100,7 +100,6 @@ export default {
 	},
 	async created() {
 		let result = await axios.get("auth/admin/news/all");
-		console.log(result);
 		if (result) {
 			this.news = result.data.data;
 		}
@@ -141,16 +140,12 @@ export default {
 
 		async save() {
 			if (this.editedIndex > -1) {
-				console.log("1");
 				Object.assign(this.news[this.editedIndex], this.editedItem);
-				console.log(this.editedItem);
 				let result = await axios.put(
 					"/auth/user/update",
 					this.editedItem
 				);
-				console.log(result);
 			} else {
-				console.log("2");
 				this.news.push(this.editedItem);
 			}
 			this.close();
