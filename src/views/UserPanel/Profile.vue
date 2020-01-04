@@ -1,18 +1,36 @@
 <template>
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
-			<v-card>
-				<v-card-text>
-					<v-avatar color="indigo" size="62">
+			<v-card style="background-color: rgba(238, 238, 238, 0.75);">
+				<v-card-text style="justify-content:start;align-items:center; display:flex;">
+					<v-avatar color="green" size="124">
 						<img :src="member.avatar" />
 					</v-avatar>
-					<edit-profile :member="member"></edit-profile>
+					<h1 style="padding:20px;">{{`${member.first_name} ${member.middle_name} ${member.last_name}`}}</h1>
 				</v-card-text>
-				<div>{{`${member.first_name} ${member.middle_name} ${member.last_name}`}}</div>
-				<div>{{member.day_of_birth}}</div>
-				<div>{{member.day_of_death}}</div>
-				<div>{{user.email}}</div>
-				<div>{{user.prefix}}</div>
+				<v-divider clas="text--primary" style="margin:0; width:100%" />
+				<div>
+					<v-card-text>
+						<b>Data urodzenia:</b>
+						{{member.day_of_birth}}
+					</v-card-text>
+					<v-card-text>
+						<b>Data śmierci:</b>
+						{{member.day_of_death}}
+					</v-card-text>
+					<v-card-text>
+						<b>Email</b>
+						:{{user.email}}
+					</v-card-text>
+					<v-card-text>
+						<b>Nazwisko rodowe:</b>
+						{{user.prefix}}
+					</v-card-text>
+					<v-card-text>
+						<edit-profile :member="member"></edit-profile>
+						<reset-password></reset-password>
+					</v-card-text>
+				</div>
 			</v-card>
 		</v-col>
 	</v-container>
@@ -21,6 +39,7 @@
 <script>
 import { mapGetters } from "vuex";
 import EditProfile from "../../components/edit-profile";
+import ResetPassword from "../../components/reset";
 export default {
 	name: "profile",
 	data() {
@@ -34,7 +53,8 @@ export default {
 		})
 	},
 	components: {
-		EditProfile
+		EditProfile,
+		ResetPassword
 	}
 };
 </script>

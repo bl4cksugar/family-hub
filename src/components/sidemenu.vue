@@ -87,10 +87,17 @@ export default {
 	margin-top: 50px;
 	background-color: #3f3f41;
 	min-height: 90vh;
+	height: 100%;
 	justify-content: center;
 	align-items: center;
 	display: flex;
 	flex-direction: column;
+}
+
+@media screen and (max-width: 600px) {
+	.sidemenu {
+		min-height: 100%;
+	}
 }
 
 .row {

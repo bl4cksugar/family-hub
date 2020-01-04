@@ -46,7 +46,9 @@
 							@click:append="show1 = !show1"
 							:rules="[rules.required]"
 						></v-text-field>
-
+						<div class="my-2">
+							<v-btn text small color="primary">you forgotten your password? Remind</v-btn>
+						</div>
 						<v-btn @click="login" style="margin:10px">
 							<span>SIGN UP</span>
 						</v-btn>

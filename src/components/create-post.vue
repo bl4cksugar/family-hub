@@ -60,9 +60,8 @@ export default {
 </script>
 
 <style scoped>
-.v-form,
-.v-textarea {
-	width: 100%;
+.v-form {
+	width: 90%;
 	background: none;
 }
 .v-form {
@@ -73,7 +72,8 @@ visiblity-class {
 }
 .center {
 	max-width: 800px;
-
+	display: flex;
+	flex-direction: column;
 	justify-items: center;
 }
 </style>
