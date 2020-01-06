@@ -81,9 +81,14 @@ export default {
 			let result = await axios.put("auth/news/update");
 		},
 		async deletePosts(newsId) {
-			let result = await axios.delete("auth/news/delete", { id: newsId });
-			console.log(result);
-			this.getPosts();
+			console.log(newsId);
+			if (confirm("Do you really want to delete?")) {
+				let result = await axios.delete("auth/news/delete", {
+					id: newsId
+				});
+				console.log(result);
+				this.getPosts();
+			}
 		}
 	},
 	// refreshPosts: function() {

@@ -4,6 +4,7 @@
 			<div class="row">
 				<new-member-form :familly="familly"></new-member-form>
 				<edit-member-form :familly="familly"></edit-member-form>
+				<delete-tree></delete-tree>
 			</div>
 			<div id="tree"></div>
 		</v-col>
@@ -13,11 +14,13 @@
 <script>
 import NewMemberForm from "../../components/newmemberform";
 import EditMemberForm from "../../components/editmemberform";
+import DeleteTree from "../../components/deleteTree";
 import axios from "axios";
 export default {
 	components: {
 		NewMemberForm,
-		EditMemberForm
+		EditMemberForm,
+		DeleteTree
 	},
 	data() {
 		return {

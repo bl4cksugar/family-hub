@@ -200,7 +200,7 @@ export default {
 			} else {
 				if (this.parentId !== null) parentId = this.parentId;
 			}
-			if (this.day_of_death !== null) {
+			if (this.death !== null) {
 				console.log("dupcia");
 				let result = await axios.post("auth/member/add/deceased", {
 					first_name: this.first_name,

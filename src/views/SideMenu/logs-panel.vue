@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
 	data() {
 		return {
@@ -49,4 +50,4 @@ export default {
 </script>
 
 <style scoped>
-</style>
+</style

@@ -19,12 +19,16 @@
 						<span>SIGN IN</span>
 					</v-btn>
 				</template>
+
 				<v-container
 					style="background:rgba(255,255,255,0.75)"
 					class="d-flex align-center justify-center"
 				>
 					<v-form ref="form" v-model="valid" lazy-validation>
 						<v-alert v-if="alert" :type="alert.type">{{alert.content}}</v-alert>
+						<div class="title">
+							<div class="headline mb-2 text-center" style="color:black">LOGIN</div>
+						</div>
 						<v-text-field
 							style="margin:10px"
 							background-color="white"

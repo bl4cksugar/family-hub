@@ -44,6 +44,14 @@ export default {
 					description: this.description
 				});
 				this.$emit("newsCreated");
+
+				let toast = this.$toasted.success("Your post was created!", {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 1000
+				});
 			}
 		},
 		changeVisiblity() {
