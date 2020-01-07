@@ -2,7 +2,14 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<v-card>
-				<v-data-table :headers="headers" :items="users" :search="search" class="elevation-1">
+				<v-data-table
+					:headers="headers"
+					:items="users"
+					:search="search"
+					class="elevation-1"
+					:loading="loading"
+					loading-text="Loading... Please wait"
+				>
 					<template v-slot:top>
 						<v-toolbar flat color="white">
 							<v-toolbar-title>Users</v-toolbar-title>
@@ -96,14 +103,17 @@ export default {
 				boolean: false
 			},
 
-			users: []
+			users: [],
+			loading: false
 		};
 	},
 	async created() {
+		this.loading = true;
 		let result = await axios.get("/auth/user/all");
 		if (result) {
 			this.users = result.data.data;
 		}
+		this.loading = false;
 	},
 	computed: {
 		formTitle() {

@@ -14,9 +14,6 @@
 			<v-row>
 				<v-btn to="/admin/systemlogs" rounded>SYSTEM LOGS</v-btn>
 			</v-row>
-			<v-row>
-				<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
-			</v-row>
 		</div>
 		<div v-if="!isAdmin && isLogged">
 			<v-row class="title text-center">USER PANEL</v-row>

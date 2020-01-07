@@ -60,6 +60,13 @@
 				</v-container>
 			</v-dialog>
 		</v-col>
+		<v-col v-if="isLogged" sm="2" justify-self="center" align-self="center">
+			<v-btn depressed text icon>
+				<v-badge :content="messages" :value="messages" color="green" overlap>
+					<v-icon>fas fa-bell</v-icon>
+				</v-badge>
+			</v-btn>
+		</v-col>
 	</v-app-bar>
 </template>
 				
@@ -73,6 +80,8 @@ export default {
 	name: "navbar",
 	data() {
 		return {
+			messages: 0,
+			show: false,
 			email: null,
 			password: null,
 			alert: null,
@@ -92,6 +101,12 @@ export default {
 		...mapGetters({
 			isLogged: "user"
 		})
+	},
+	async created() {
+		let result = await axios.get("auth/pivot/get");
+		if (result) {
+			this.messages = result.data.count;
+		}
 	},
 	methods: {
 		async login() {

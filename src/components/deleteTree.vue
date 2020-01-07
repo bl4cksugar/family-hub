@@ -7,3 +7,21 @@
 		</v-dialog>
 	</v-row>
 </template>
+
+// <script>
+// export default {
+
+// },
+
+// 	async deleteTree() {
+// 			console.log();
+// 			if (confirm("Do you really want to delete?")) {
+// 				let result = await axios.(
+// 					"auth/news/delete?id=" + newsId
+// 				);
+// 				console.log(result);
+// 				this.getPosts();
+// 			}
+// 		}
+//
+</script>

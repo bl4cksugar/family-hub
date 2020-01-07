@@ -13,6 +13,7 @@
 
 
 <script>
+import axios from "axios";
 import CreatePost from "../../components/create-post";
 import Posts from "../../components/posts";
 
@@ -24,7 +25,7 @@ export default {
 		refresh: false,
 		postsFilter: "getsomeposts"
 	}),
-	created() {},
+	async created() {},
 	methods: {
 		refreshPost() {
 			this.refresh = true;

@@ -83,9 +83,9 @@ export default {
 		async deletePosts(newsId) {
 			console.log(newsId);
 			if (confirm("Do you really want to delete?")) {
-				let result = await axios.delete("auth/news/delete", {
-					id: newsId
-				});
+				let result = await axios.delete(
+					"auth/news/delete?id=" + newsId
+				);
 				console.log(result);
 				this.getPosts();
 			}

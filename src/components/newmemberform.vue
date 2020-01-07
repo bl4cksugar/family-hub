@@ -113,8 +113,22 @@
 									hint="Partner of member, which you want to add"
 									persistent-hint
 									item-text="name"
-									item-value="relation_id"
+									item-value="user_id"
 									label="Partner*"
+									required
+								></v-select>
+							</v-col>
+							<v-col cols="12" sm="6" v-if="isFounder">
+								<v-select
+									v-model="childRelationId"
+									:items="familly"
+									:disabled="disableChild"
+									clearable
+									hint="Member, which parent do you want to add"
+									persistent-hint
+									item-text="name"
+									item-value="relation_id"
+									label="Child*"
 									required
 								></v-select>
 							</v-col>
@@ -153,8 +167,10 @@ export default {
 		isChild: true,
 		isPartner: false,
 		disableParent: false,
+		disableChild: false,
 		disablePartner: false,
 		parentId: null,
+		childRelationId: null,
 		partnerId: null,
 		menu: null,
 		menu2: null
@@ -190,40 +206,85 @@ export default {
 			let parentId = null;
 			let partnerId = null;
 			if (!this.isFounder) {
-				if (this.isPartner) {
+				if (this.isChild) {
 					let parentRelation = this.familly.find(item => {
-						console.log(item.id, this.member.id);
-						return item.id === this.member.id;
+						return item.user_id === this.member.user_id;
 					});
 					parentId = parentRelation.relation_id;
+				} else if (this.isPartner) {
+					partnerId = this.member.user_id;
 				}
-			} else {
+			} else if (this.isFounder) {
 				if (this.parentId !== null) parentId = this.parentId;
+				else if (this.childRelationId !== null) {
+					let dupa = await axios.get(
+						"auth/relation/edit?id=" + this.childRelationId
+					);
+					console.log(dupa);
+					// let result2 = await axios.post("auth/member/add", {
+					// 	first_name: this.first_name,
+					// 	middle_name: this.middle_name,
+					// 	last_name: this.last_name,
+					// 	email: this.email,
+					// 	day_of_birth: this.date,
+					// 	day_of_death: this.death,
+					// 	parent_id: parentId,
+					// 	partner_id: partnerId
+					// });
+					// console.log(result2);
+					// let relationChange = await axios.
+				} else partnerId = this.partnerId;
 			}
-			if (this.death !== null) {
-				console.log("dupcia");
-				let result = await axios.post("auth/member/add/deceased", {
-					first_name: this.first_name,
-					middle_name: this.middle_name,
-					last_name: this.last_name,
-					email: this.email,
-					day_of_birth: this.date,
-					day_of_death: this.death,
-					parent_id: parentId,
-					partner_id: partnerId
-				});
-			} else {
-				let result = await axios.post("auth/member/add", {
-					first_name: this.first_name,
-					middle_name: this.middle_name,
-					last_name: this.last_name,
-					email: this.email,
-					day_of_birth: this.date,
-					day_of_death: this.death,
-					parent_id: parentId,
-					partner_id: partnerId
-				});
-			}
+			// console.log(parentId, partnerId);
+			// let result;
+			// if (this.death !== null) {
+			// 	result = await axios.post("auth/member/add/deceased", {
+			// 		first_name: this.first_name,
+			// 		middle_name: this.middle_name,
+			// 		last_name: this.last_name,
+			// 		email: this.email,
+			// 		day_of_birth: this.date,
+			// 		day_of_death: this.death,
+			// 		parent_id: parentId,
+			// 		partner_id: partnerId
+			// 	});
+			// } else {
+			// 	result = await axios.post("auth/member/add", {
+			// 		first_name: this.first_name,
+			// 		middle_name: this.middle_name,
+			// 		last_name: this.last_name,
+			// 		email: this.email,
+			// 		day_of_birth: this.date,
+			// 		day_of_death: this.death,
+			// 		parent_id: parentId,
+			// 		partner_id: partnerId
+			// 	});
+			// }
+
+			// if (result) {
+			// 	this.$emit("newsCreated");
+
+			// 	this.dialog = false;
+			// 	console.log(result);
+			// 	this.$toasted.success(
+			// 		`${result.data.message}, ${result.data.relation}`,
+			// 		{
+			// 			theme: "toasted-primary",
+			// 			position: "top-right",
+			// 			fullWidth: true,
+			// 			fitToScreen: false,
+			// 			duration: 1000
+			// 		}
+			// 	);
+			// } else {
+			// 	this.$toasted.success("Error!", {
+			// 		theme: "toasted-primary",
+			// 		position: "top-right",
+			// 		fullWidth: true,
+			// 		fitToScreen: false,
+			// 		duration: 1000
+			// 	});
+			// }
 		},
 		save(date) {
 			this.$refs.menu.save(date);

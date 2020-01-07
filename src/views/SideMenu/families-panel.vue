@@ -2,7 +2,14 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<v-card>
-				<v-data-table :headers="headers" :items="families" :search="search" class="elevation-1">
+				<v-data-table
+					:headers="headers"
+					:items="families"
+					:search="search"
+					class="elevation-1"
+					:loading="loading"
+					loading-text="Loading... Please wait"
+				>
 					<template v-slot:top>
 						<v-toolbar flat color="white">
 							<v-toolbar-title>Families</v-toolbar-title>
@@ -97,15 +104,18 @@ export default {
 				boolean: false
 			},
 
-			families: []
+			families: [],
+			loading: false
 		};
 	},
 	async created() {
 		let result = await axios.get("/auth/family/all");
 
 		if (result) {
+			this.loading = true;
 			this.families = result.data.data;
 		}
+		this.loading = false;
 	},
 	computed: {
 		formTitle() {

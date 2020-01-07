@@ -17,6 +17,10 @@
 								by
 								<b>{{picture.author_id}}</b>
 							</p>
+							<img
+								style="max-width:300px"
+								:src="'http://family.przedprojekt.com/storage/'+ picture.filename"
+							/>
 							<v-divider clas="text--primary" style="margin:0;" />
 						</v-list-item-subtitle>
 						<p>{{picture.description}}</p>
@@ -57,9 +61,9 @@ export default {
 		async deletePicture(pictureId) {
 			console.log(pictureId);
 			if (confirm("Do you really want to delete?")) {
-				let result = await axios.delete("auth/gallery/delete", {
-					id: pictureId
-				});
+				let result = await axios.delete(
+					"auth/gallery/delete?id=" + pictureId
+				);
 				console.log(result);
 				this.getPicture();
 			}

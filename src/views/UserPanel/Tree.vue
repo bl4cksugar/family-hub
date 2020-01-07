@@ -2,7 +2,7 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<div class="row">
-				<new-member-form :familly="familly"></new-member-form>
+				<new-member-form :familly="familly" @newsCreated="refreshTree"></new-member-form>
 				<edit-member-form :familly="familly"></edit-member-form>
 				<delete-tree></delete-tree>
 			</div>
@@ -33,12 +33,21 @@ export default {
 			tags: {}
 		};
 	},
+	watch: {
+		familly(newVal) {
+			newVal.forEach(item =>
+				item.img.length > 0
+					? (item.img = `http://family.przedprojekt.com/storage/${item.img}`)
+					: (item.img = "")
+			);
+		}
+	},
 	async created() {
 		let pupa2 = await axios.get("auth/tree");
 		console.log(pupa2);
 		let result = await axios.get("auth/relation/all");
 		console.log(result);
-		// let result3 = await axios.get("auth/member/info", { id: 16 });
+		// let result3 = await axios.get("auth/member/info?id=" + 16);
 		// console.log(result3);
 		// let pupa = await axios.post("auth/relation/add", {
 		// 	partner_1_id: "148",
@@ -71,44 +80,59 @@ export default {
 					partner.tags = [group];
 				}
 			});
+		},
+		async refreshTree() {
+			await this.mountTree();
+		},
+		async mountTree() {
+			let result = await axios.get("/auth/tree");
+			this.familly = result.data.data;
+			this.groupRender();
+
+			OrgChart.templates.diva.field_2 =
+				'<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="10" y="100" text-anchor="middle">{val}</text>';
+			OrgChart.templates.diva.field_3 =
+				'<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="100" y="160" text-anchor="middle">{val}</text>';
+
+			var chart = new OrgChart(document.getElementById("tree"), {
+				template: "diva",
+				nodeMouseClick: OrgChart.action.details,
+				nodeMenu: {
+					details: { text: "Details" },
+					remove: { text: "Remove" }
+				},
+				nodeBinding: {
+					field_0: "name",
+					field_1: "birthDay",
+					field_2: "id",
+					field_3: "deathDay",
+					img_0: "img"
+				},
+				tags: this.tags,
+				nodes: this.familly
+			});
+			chart.editUI.on("field", function(sender, args) {
+				if (args.name.startsWith("marriage")) {
+					return false;
+				}
+				console.log(args);
+				if (args.name == "id") {
+					return false;
+				}
+				if (args.name == "partnerId") {
+					return false;
+				}
+				if (args.name == "user_id") {
+					return false;
+				}
+				if (args.name == "relation_id") {
+					return false;
+				}
+			});
 		}
 	},
 	async mounted() {
-		let result = await axios.get("/auth/tree");
-		this.familly = result.data.data;
-		this.groupRender();
-
-		OrgChart.templates.diva.field_2 =
-			'<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="10" y="100" text-anchor="middle">{val}</text>';
-		OrgChart.templates.diva.field_3 =
-			'<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="100" y="160" text-anchor="middle">{val}</text>';
-
-		var chart = new OrgChart(document.getElementById("tree"), {
-			template: "diva",
-			nodeMouseClick: OrgChart.action.details,
-			nodeMenu: {
-				details: { text: "Details" },
-				edit: { text: "Edit" },
-				remove: { text: "Remove" }
-			},
-			nodeBinding: {
-				field_0: "name",
-				field_1: "birthDay",
-				field_2: "id",
-				field_3: "deathDay",
-				img_0: "img"
-			},
-			tags: this.tags,
-			nodes: this.familly
-		});
-		chart.editUI.on("field", function(sender, args) {
-			if (args.name.startsWith("marriage")) {
-				return false;
-			}
-			if (args.name == "pid") {
-				return true;
-			}
-		});
+		await this.mountTree();
 	}
 };
 </script>

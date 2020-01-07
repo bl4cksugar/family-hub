@@ -4,7 +4,7 @@
 			<v-card style="background-color: rgba(238, 238, 238, 0.75);">
 				<v-card-text style="justify-content:start;align-items:center; display:flex;">
 					<v-avatar color="green" size="124">
-						<img :src="member.avatar" />
+						<img :src="'http://family.przedprojekt.com/storage/' + member.avatar" />
 					</v-avatar>
 					<v-col>
 						<h1 style="padding:20px;">{{`${member.first_name} ${member.middle_name} ${member.last_name}`}}</h1>
@@ -45,7 +45,6 @@
 					</v-card-text>
 					<v-card-text>
 						<edit-profile :member="member"></edit-profile>
-						<reset-password></reset-password>
 					</v-card-text>
 				</div>
 			</v-card>
@@ -98,7 +97,6 @@ export default {
 			console.log(this.selectedFile);
 		},
 		async onUpload() {
-			console.log("dupa");
 			this.loader = "loading3";
 			const formData = new FormData();
 
