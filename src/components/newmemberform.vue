@@ -273,7 +273,7 @@ export default {
 					position: "top-right",
 					fullWidth: true,
 					fitToScreen: false,
-					duration: 1000
+					duration: 3000
 				});
 			} else {
 				this.$toasted.success("Error, try again!", {
@@ -281,7 +281,7 @@ export default {
 					position: "top-right",
 					fullWidth: true,
 					fitToScreen: false,
-					duration: 1000
+					duration: 3000
 				});
 			}
 		},
