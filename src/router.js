@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import LandingPage from './views/Home.vue'
+import ActiveUser from './views/ActiveUser.vue'
 
 import UsersPanel from './views/SideMenu/users-panel.vue'
 import FamiliesPanel from './views/SideMenu/families-panel.vue'
@@ -107,6 +108,11 @@ const router = new Router({
       requiresAuth: true,
     }
   },
+  {
+    path: '/verify/:token',
+    name: 'verifyUser',
+    component: ActiveUser
+  }
 
   ]
 })

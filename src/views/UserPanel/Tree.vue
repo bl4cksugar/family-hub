@@ -1,7 +1,7 @@
 <template>
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
-			<div class="row">
+			<div class="row" style="margin-top:50px">
 				<new-member-form :familly="familly" @newsCreated="refreshTree"></new-member-form>
 				<edit-member-form :familly="familly"></edit-member-form>
 				<delete-tree></delete-tree>
@@ -35,11 +35,13 @@ export default {
 	},
 	watch: {
 		familly(newVal) {
-			newVal.forEach(item =>
-				item.img.length > 0
-					? (item.img = `http://family.przedprojekt.com/storage/${item.img}`)
-					: (item.img = "")
-			);
+			newVal.forEach(item => {
+				// console.log(item.img, item.id);
+				return "";
+				// return item.img.length > 0
+				// 	? (item.img = `http://family.przedprojekt.com/storage/${item.img}`)
+				// 	: (item.img = "");
+			});
 		}
 	},
 	async created() {

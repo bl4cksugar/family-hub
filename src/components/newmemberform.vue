@@ -119,18 +119,11 @@
 								></v-select>
 							</v-col>
 							<v-col cols="12" sm="6" v-if="isFounder">
-								<v-select
-									v-model="childRelationId"
-									:items="familly"
+								<v-checkbox
+									v-model="isHeadOfFamilly"
 									:disabled="disableChild"
-									clearable
-									hint="Member, which parent do you want to add"
-									persistent-hint
-									item-text="name"
-									item-value="relation_id"
-									label="Child*"
-									required
-								></v-select>
+									label="Mark as head of familly"
+								></v-checkbox>
 							</v-col>
 						</v-row>
 					</v-container>
@@ -170,7 +163,7 @@ export default {
 		disableChild: false,
 		disablePartner: false,
 		parentId: null,
-		childRelationId: null,
+		isHeadOfFamilly: false,
 		partnerId: null,
 		menu: null,
 		menu2: null
@@ -216,24 +209,57 @@ export default {
 				}
 			} else if (this.isFounder) {
 				if (this.parentId !== null) parentId = this.parentId;
-				else if (this.childRelationId !== null) {
-					let dupa = await axios.get(
-						"auth/relation/edit?id=" + this.childRelationId
+				else if (this.partnerId !== null) partnerId = this.partnerId;
+				let result;
+				if (this.death !== null) {
+					result = await axios.post("auth/member/add/deceased", {
+						first_name: this.first_name,
+						middle_name: this.middle_name,
+						last_name: this.last_name,
+						email: this.email,
+						day_of_birth: this.date,
+						day_of_death: this.death,
+						parent_id: parentId,
+						partner_id: partnerId
+					});
+				} else {
+					result = await axios.post("auth/member/add", {
+						first_name: this.first_name,
+						middle_name: this.middle_name,
+						last_name: this.last_name,
+						email: this.email,
+						day_of_birth: this.date,
+						day_of_death: this.death,
+						parent_id: parentId,
+						partner_id: partnerId
+					});
+				}
+
+				if (this.isHeadOfFamilly === true) {
+					let relation = await axios.post("auth/relation/add", {
+						partner_1_id: result.data.data.member.user_id,
+						partner_2_id: null,
+						parent_id: null
+					});
+					let relations = await axios.get("auth/relation/all");
+					let childRelation = relations.data.data.find(
+						item => item.parent_id === null
 					);
-					console.log(dupa);
-					// let result2 = await axios.post("auth/member/add", {
-					// 	first_name: this.first_name,
-					// 	middle_name: this.middle_name,
-					// 	last_name: this.last_name,
-					// 	email: this.email,
-					// 	day_of_birth: this.date,
-					// 	day_of_death: this.death,
-					// 	parent_id: parentId,
-					// 	partner_id: partnerId
-					// });
-					// console.log(result2);
-					// let relationChange = await axios.
-				} else partnerId = this.partnerId;
+					let parentRelation = relations.data.data.find(
+						item =>
+							item.partner_1_id ===
+							result.data.data.member.user_id
+					);
+					let changedRelation = await axios.put(
+						"auth/relation/update",
+						{
+							id: childRelation.id,
+							partner_1_id: childRelation.partner_1_id,
+							partner_2_id: childRelation.partner_2_id,
+							parent_id: parentRelation.id
+						}
+					);
+				}
 			}
 			// console.log(parentId, partnerId);
 			// let result;
