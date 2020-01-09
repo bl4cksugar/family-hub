@@ -2,7 +2,7 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<div class="row" style="margin-top:50px">
-				<new-member-form :familly="familly" @newsCreated="refreshTree"></new-member-form>
+				<new-member-form :familly="familly" @memberCreated="refreshTree"></new-member-form>
 				<edit-member-form :familly="familly"></edit-member-form>
 				<delete-tree></delete-tree>
 			</div>

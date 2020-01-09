@@ -166,6 +166,7 @@ export default {
 		isHeadOfFamilly: false,
 		partnerId: null,
 		menu: null,
+		success: false,
 		menu2: null
 	}),
 	watch: {
@@ -198,6 +199,7 @@ export default {
 		async submit() {
 			let parentId = null;
 			let partnerId = null;
+
 			if (!this.isFounder) {
 				if (this.isChild) {
 					let parentRelation = this.familly.find(item => {
@@ -207,110 +209,81 @@ export default {
 				} else if (this.isPartner) {
 					partnerId = this.member.user_id;
 				}
-			} else if (this.isFounder) {
+			} else {
 				if (this.parentId !== null) parentId = this.parentId;
 				else if (this.partnerId !== null) partnerId = this.partnerId;
-				let result;
-				if (this.death !== null) {
-					result = await axios.post("auth/member/add/deceased", {
-						first_name: this.first_name,
-						middle_name: this.middle_name,
-						last_name: this.last_name,
-						email: this.email,
-						day_of_birth: this.date,
-						day_of_death: this.death,
-						parent_id: parentId,
-						partner_id: partnerId
-					});
-				} else {
-					result = await axios.post("auth/member/add", {
-						first_name: this.first_name,
-						middle_name: this.middle_name,
-						last_name: this.last_name,
-						email: this.email,
-						day_of_birth: this.date,
-						day_of_death: this.death,
-						parent_id: parentId,
-						partner_id: partnerId
-					});
-				}
+			}
+			let result;
+			if (this.death !== null) {
+				result = await axios.post("auth/member/add/deceased", {
+					first_name: this.first_name,
+					middle_name: this.middle_name,
+					last_name: this.last_name,
+					email: this.email,
+					day_of_birth: this.date,
+					day_of_death: this.death,
+					parent_id: parentId,
+					partner_id: partnerId
+				});
+			} else {
+				result = await axios.post("auth/member/add", {
+					first_name: this.first_name,
+					middle_name: this.middle_name,
+					last_name: this.last_name,
+					email: this.email,
+					day_of_birth: this.date,
+					day_of_death: this.death,
+					parent_id: parentId,
+					partner_id: partnerId
+				});
+			}
 
-				if (this.isHeadOfFamilly === true) {
-					let relation = await axios.post("auth/relation/add", {
-						partner_1_id: result.data.data.member.user_id,
-						partner_2_id: null,
-						parent_id: null
-					});
-					let relations = await axios.get("auth/relation/all");
-					let childRelation = relations.data.data.find(
-						item => item.parent_id === null
-					);
-					let parentRelation = relations.data.data.find(
-						item =>
-							item.partner_1_id ===
-							result.data.data.member.user_id
-					);
-					let changedRelation = await axios.put(
-						"auth/relation/update",
-						{
-							id: childRelation.id,
-							partner_1_id: childRelation.partner_1_id,
-							partner_2_id: childRelation.partner_2_id,
-							parent_id: parentRelation.id
-						}
-					);
+			if (this.isHeadOfFamilly === true) {
+				let relation = await axios.post("auth/relation/add", {
+					partner_1_id: result.data.data.member.user_id,
+					partner_2_id: null,
+					parent_id: null
+				});
+				let relations = await axios.get("auth/relation/all");
+				let childRelation = relations.data.data.find(
+					item => item.parent_id === null
+				);
+				let parentRelation = relations.data.data.find(
+					item =>
+						item.partner_1_id === result.data.data.member.user_id
+				);
+				let changedRelation = await axios.put("auth/relation/update", {
+					id: childRelation.id,
+					partner_1_id: childRelation.partner_1_id,
+					partner_2_id: childRelation.partner_2_id,
+					parent_id: parentRelation.id
+				});
+				if (changedRelation) {
+					this.success = true;
 				}
 			}
-			// console.log(parentId, partnerId);
-			// let result;
-			// if (this.death !== null) {
-			// 	result = await axios.post("auth/member/add/deceased", {
-			// 		first_name: this.first_name,
-			// 		middle_name: this.middle_name,
-			// 		last_name: this.last_name,
-			// 		email: this.email,
-			// 		day_of_birth: this.date,
-			// 		day_of_death: this.death,
-			// 		parent_id: parentId,
-			// 		partner_id: partnerId
-			// 	});
-			// } else {
-			// 	result = await axios.post("auth/member/add", {
-			// 		first_name: this.first_name,
-			// 		middle_name: this.middle_name,
-			// 		last_name: this.last_name,
-			// 		email: this.email,
-			// 		day_of_birth: this.date,
-			// 		day_of_death: this.death,
-			// 		parent_id: parentId,
-			// 		partner_id: partnerId
-			// 	});
-			// }
+			if (result) this.success = true;
 
-			// if (result) {
-			// 	this.$emit("newsCreated");
+			if (this.success === true) {
+				this.$emit("memberCreated");
 
-			// 	this.dialog = false;
-			// 	console.log(result);
-			// 	this.$toasted.success(
-			// 		`${result.data.message}, ${result.data.relation}`,
-			// 		{
-			// 			theme: "toasted-primary",
-			// 			position: "top-right",
-			// 			fullWidth: true,
-			// 			fitToScreen: false,
-			// 			duration: 1000
-			// 		}
-			// 	);
-			// } else {
-			// 	this.$toasted.success("Error!", {
-			// 		theme: "toasted-primary",
-			// 		position: "top-right",
-			// 		fullWidth: true,
-			// 		fitToScreen: false,
-			// 		duration: 1000
-			// 	});
-			// }
+				this.dialog = false;
+				this.$toasted.success("Member successfully added", {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 1000
+				});
+			} else {
+				this.$toasted.success("Error, try again!", {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 1000
+				});
+			}
 		},
 		save(date) {
 			this.$refs.menu.save(date);
