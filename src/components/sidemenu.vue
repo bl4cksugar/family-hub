@@ -3,7 +3,7 @@
 		<div v-if="isAdmin">
 			<v-row class="title text-center">ADMINISTRATION PANEL</v-row>
 			<v-row>
-				<v-btn to="/admin/userspanel" rounded>USERS</v-btn>
+				<v-btn to="/admin/users" rounded>USERS</v-btn>
 			</v-row>
 			<v-row>
 				<v-btn to="/admin/families" rounded>FAMILIES</v-btn>
@@ -13,9 +13,6 @@
 			</v-row>
 			<v-row>
 				<v-btn to="/admin/systemlogs" rounded>SYSTEM LOGS</v-btn>
-			</v-row>
-			<v-row>
-				<v-btn to="/admin/affinities" rounded>AFFINITIES</v-btn>
 			</v-row>
 		</div>
 		<div v-if="!isAdmin && isLogged">
@@ -65,8 +62,8 @@ export default {
 		}
 	},
 	methods: {
-		signout() {
-			let result = axios.get("addresshere");
+		async signout() {
+			let result = await axios.get("auth/logout");
 			if (result) {
 				store.dispatch("deleteSession");
 				this.$router.push("/");
@@ -87,10 +84,17 @@ export default {
 	margin-top: 50px;
 	background-color: #3f3f41;
 	min-height: 90vh;
+	height: 100%;
 	justify-content: center;
 	align-items: center;
 	display: flex;
 	flex-direction: column;
+}
+
+@media screen and (max-width: 600px) {
+	.sidemenu {
+		min-height: 100%;
+	}
 }
 
 .row {

@@ -7,18 +7,6 @@
 			</div>
 			<v-form ref="form" v-model="valid" lazy-validation>
 				<v-card-text>
-					<!-- <v-row> -->
-					<!-- <v-col sm="6">
-							<v-text-field
-								background-color="rgba(255, 255, 255, 0.9)"
-								color="grey"
-								outlined
-								v-model="name"
-								label="name"
-							></v-text-field>
-					</v-col>-->
-
-					<!-- <v-col sm="6"> -->
 					<v-text-field
 						background-color="rgba(255, 255, 255, 0.9)"
 						color="grey"
@@ -26,8 +14,6 @@
 						v-model="surname"
 						label="Familly name"
 					></v-text-field>
-					<!-- </v-col> -->
-					<!-- </v-row> -->
 
 					<v-text-field
 						background-color="rgba(255, 255, 255, 0.9)"
@@ -37,14 +23,6 @@
 						label="e-mail"
 						:rules="[rules.required, rules.email]"
 					></v-text-field>
-
-					<!-- <v-text-field
-						background-color="rgba(255, 255, 255, 0.9)"
-						color="grey"
-						outlined
-						v-model="login"
-						label="login"
-					></v-text-field>-->
 
 					<v-text-field
 						background-color="rgba(255, 255, 255, 0.9)"
@@ -70,34 +48,6 @@
 						prepend-inner-icon="fas fa-key"
 						@keyup.enter="submit"
 					></v-text-field>
-
-					<!-- <v-menu
-						ref="menu"
-						v-model="menu"
-						:close-on-content-click="false"
-						transition="scale-transition"
-						offset-y
-						min-width="290px"
-					>
-						<template v-slot:activator="{ on }">
-							<v-text-field
-								color="grey"
-								background-color="rgba(255, 255, 255, 0.9)"
-								v-model="date"
-								label="Birthday date"
-								outlined
-								readonly
-								v-on="on"
-							></v-text-field>
-						</template>
-						<v-date-picker
-							ref="picker"
-							v-model="date"
-							:max="new Date().toISOString().substr(0, 10)"
-							min="1950-01-01"
-							@change="save"
-						></v-date-picker>
-					</v-menu>-->
 
 					<div class="btn text-center">
 						<v-btn @click="signUp" rounded width="200px">SIGN UP</v-btn>

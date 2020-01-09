@@ -6,6 +6,9 @@ import vuetify from './plugins/vuetify';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import cookieHelper from './helpers/cookie'
+import Toasted from 'vue-toasted';
+
+Vue.use(Toasted)
 
 
 Vue.config.productionTip = false
@@ -40,8 +43,8 @@ Vue.axios.interceptors.response.use(response => {
       }
     };
   } else
-    store.dispatch('deleteSession');
-  return Promise.reject(error.response)
+    // store.dispatch('deleteSession');
+    return Promise.reject(error.response)
 });
 
 

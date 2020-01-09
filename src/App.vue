@@ -42,14 +42,6 @@ export default {
 		...mapGetters({
 			isLogged: "user"
 		})
-	},
-	async created() {
-		let verifyCookie = cookie.getTokenCookie();
-		if (verifyCookie) {
-			let result = await axios.get("auth/user");
-			if (result) store.dispatch("setSession", result.data);
-			else store.dispatch("deleteSession");
-		}
 	}
 };
 </script>

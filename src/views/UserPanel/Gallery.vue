@@ -1,194 +1,46 @@
+
 <template>
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
-			<button id="btn">Group</button>
-			<div id="tree"></div>
+			<div class="centring-posts">
+				<uploadFile @refreshGallery="refreshGallery"></uploadFile>
+				<v-divider clas="text--primary" style="margin:0; width:90%" />
+				<picture-list :userProfile="user" :currentPicture="pictureFilter" :refreshPicture="refresh"></picture-list>
+			</div>
 		</v-col>
 	</v-container>
 </template>
 
 <script>
+import axios from "axios";
+import UploadFile from "../../components/uploadFile";
+import picture from "../../components/picture";
+
 export default {
-	data() {
-		return {
-			familly: [
-				{
-					id: 1,
-					tags: ["f1"],
-					name: "King George VI",
-					img: "https://balkangraph.com/js/img/f1.png"
-				},
-				{
-					id: 2,
-					tags: ["f1"],
-					name: "Queen Elizabeth",
-					title: "The Queen Mother",
-					img: "https://balkangraph.com/js/img/f2.png"
-				},
-				{
-					id: 3,
-					tags: ["f2"],
-					pid: 2,
-					name: "Prince Philip",
-					title: "Duke of Edinburgh",
-					img: "https://balkangraph.com/js/img/f3.png"
-				},
-				{
-					id: 4,
-					tags: ["f2"],
-					pid: 2,
-					name: "Queen Elizabeth II",
-					img: "https://balkangraph.com/js/img/f5.png"
-				},
-				{
-					id: 5,
-					pid: 2,
-					name: "Princess Margaret",
-					img: "https://balkangraph.com/js/img/f6.png"
-				},
-				{
-					id: 6,
-					tags: ["f3"],
-					pid: 4,
-					name: "Camila",
-					title: "Duchess of Cornwall",
-					img: "https://balkangraph.com/js/img/f7.png"
-				},
-				{
-					id: 7,
-					tags: ["f3"],
-					pid: 4,
-					name: "Charles",
-					title: "Prince of Wales",
-					img: "https://balkangraph.com/js/img/f8.png"
-				},
-				{
-					id: 8,
-					tags: ["f3"],
-					pid: 4,
-					name: "Diana",
-					title: "Princess of Wales",
-					img: "https://balkangraph.com/js/img/f9.png"
-				},
-				{
-					id: 9,
-					pid: 4,
-					name: "Anne",
-					title: "Princess Royal",
-					img: "https://balkangraph.com/js/img/f10.png"
-				},
-				{
-					id: 10,
-					pid: 4,
-					name: "Prince Andrew",
-					title: "Duke of York",
-					img: "https://balkangraph.com/js/img/f11.png"
-				},
-				{
-					id: 11,
-					pid: 4,
-					name: "Prince Edward",
-					title: "Earl of Wessex",
-					img: "https://balkangraph.com/js/img/f12.png"
-				},
-				{
-					id: 12,
-					tags: ["f4"],
-					pid: 7,
-					name: "Catherine",
-					title: "Duchess of Cambridge",
-					img: "https://balkangraph.com/js/img/f13.png"
-				},
-				{
-					id: 13,
-					tags: ["f4"],
-					pid: 7,
-					name: "Prince William",
-					title: "Duch of Cambridge",
-					img: "https://balkangraph.com/js/img/f14.png"
-				},
-				{
-					id: 14,
-					tags: ["f7"],
-					pid: 7,
-					name: "Prince Harry",
-					img: "https://balkangraph.com/js/img/f15.png"
-				},
-				{
-					id: 15,
-					tags: ["f7"],
-					pid: 7,
-					name: "Meghan Markle",
-					img: "https://balkangraph.com/js/img/f16.png"
-				},
-				{
-					id: 16,
-					pid: 12,
-					name: "Prince George of Cambridge",
-					img: "https://balkangraph.com/js/img/f17.png"
-				},
-				{
-					id: 17,
-					pid: 12,
-					name: "Prince Charlotte of Cambridge",
-					img: "https://balkangraph.com/js/img/f18.png"
-				},
-				{
-					id: 18,
-					pid: 12,
-					name: "Prince Louis of Cambridge",
-					img: "https://balkangraph.com/js/img/f19.png"
-				}
-			],
-			familyGroupTag: {},
-			tags: {}
-		};
-	},
+	data: () => ({
+		user: {
+			id: ""
+		},
+		refresh: false,
+		pictureFilter: "getsomepicture"
+	}),
+	created() {},
 	methods: {
-		newGroup() {
-			this.tags[
-				`f${Object.keys(this.tags).length + 1}`
-			] = this.familyGroupTag;
+		refreshGallery() {
+			this.refresh = true;
 		}
 	},
-	mounted() {
-		this.familyGroupTag = {
-			group: true,
-			template: "group_grey",
-			groupState: OrgChart.EXPAND
-		};
-
-		this.tags = {
-			f1: this.familyGroupTag,
-			f2: this.familyGroupTag,
-			f3: this.familyGroupTag,
-			f4: this.familyGroupTag,
-			f5: this.familyGroupTag,
-			f6: this.familyGroupTag
-		};
-
-		this.newGroup();
-
-		var chart = new OrgChart(document.getElementById("tree"), {
-			template: "diva",
-			nodeMouseClick: OrgChart.action.details,
-			nodeMenu: {
-				details: { text: "Details" },
-				add: { text: "Add New" },
-				edit: { text: "Edit" },
-				remove: { text: "Remove" }
-			},
-			nodeBinding: {
-				field_0: "name",
-				field_1: "title",
-				img_0: "img"
-			},
-			tags: this.tags,
-			nodes: this.familly
-		});
+	components: {
+		UploadFile,
+		"picture-list": picture
 	}
 };
 </script>
 
 <style scoped>
+.centring-posts {
+	display: grid;
+	justify-content: center;
+	background-color: rgba(238, 238, 238, 0.75);
+}
 </style>
