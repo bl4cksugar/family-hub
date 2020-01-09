@@ -2,11 +2,24 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<v-card>
-				<v-data-table :headers="headers" :items="news" :search="search" class="elevation-1">
+				<v-data-table
+					:headers="headers"
+					:items="news"
+					:search="search"
+					class="elevation-1"
+					:loading="loading"
+					loading-text="Loading... Please wait"
+				>
 					<template v-slot:top>
 						<v-toolbar flat color="white">
 							<v-toolbar-title>News</v-toolbar-title>
 							<v-divider class="mx-4" inset vertical></v-divider>
+							<v-col cols="12" sm="6" md="3">
+								<v-text-field v-model="prefix" placeholder="Prefix" clearable></v-text-field>
+							</v-col>
+							<v-btn depressed text icon @click="sendPrefix">
+								<v-icon>mdi-send</v-icon>
+							</v-btn>
 							<v-spacer></v-spacer>
 							<v-text-field
 								v-model="search"
@@ -26,7 +39,8 @@
 										<v-container>
 											<v-row>
 												<v-col cols="12" sm="6" md="4">
-													<v-text-field v-model="editedItem.email" label="Email"></v-text-field>
+													<v-text-field v-model="editedItem.title" label="Title"></v-text-field>
+													<v-text-field v-model="editedItem.description" label="Description"></v-text-field>
 												</v-col>
 											</v-row>
 										</v-container>
@@ -66,6 +80,7 @@ export default {
 		return {
 			test: true,
 			dialog: false,
+			prefix: "",
 			search: "",
 			headers: [
 				{
@@ -95,16 +110,12 @@ export default {
 				boolean: false
 			},
 
-			news: []
+			news: [],
+			loading: false
 		};
 	},
-	async created() {
-		let result = await axios.get("auth/admin/news/all");
-		console.log(result);
-		if (result) {
-			this.news = result.data.data;
-		}
-	},
+
+	async created() {},
 	computed: {
 		formTitle() {
 			return this.editedIndex === -1 ? "New Item" : "Edit Item";
@@ -116,6 +127,17 @@ export default {
 		}
 	},
 	methods: {
+		async sendPrefix() {
+			// this.loading = true;
+			let result = await axios.post(
+				"auth/admin/news/all?prefix= " + this.prefix
+			);
+			if (result) {
+				this.news = result.data.data;
+			}
+			// this.loading = false;
+		},
+
 		editItem(item) {
 			this.editedIndex = this.news.indexOf(item);
 			this.editedItem = Object.assign({}, item);
@@ -126,7 +148,7 @@ export default {
 			const index = this.news.indexOf(item);
 			confirm("Are you sure you want to delete this item?") &&
 				this.news.splice(index, 1);
-			let result = await axios.post("/auth/news/deactive", {
+			let result = await axios.post("/auth/news/delete", {
 				id: item.id
 			});
 		},
@@ -141,16 +163,12 @@ export default {
 
 		async save() {
 			if (this.editedIndex > -1) {
-				console.log("1");
 				Object.assign(this.news[this.editedIndex], this.editedItem);
-				console.log(this.editedItem);
 				let result = await axios.put(
-					"/auth/user/update",
+					"/auth/news/update",
 					this.editedItem
 				);
-				console.log(result);
 			} else {
-				console.log("2");
 				this.news.push(this.editedItem);
 			}
 			this.close();

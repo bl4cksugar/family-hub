@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import LandingPage from './views/Home.vue'
-
-
+import ActiveUser from './views/ActiveUser.vue'
 
 import UsersPanel from './views/SideMenu/users-panel.vue'
 import FamiliesPanel from './views/SideMenu/families-panel.vue'
@@ -20,98 +19,100 @@ import Profile from './views/UserPanel/Profile.vue'
 import cookieHelper from './helpers/cookie'
 import store from "./store";
 import axios from 'axios'
-import {
-  newExpression
-} from '@babel/types'
 
 
 Vue.use(Router)
 
 const router = new Router({
-  // mode: 'history',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
-      path: '/',
-      name: 'landing-page',
-      component: LandingPage
-    },
-    {
-      path: '/admin/logs',
-      name: 'logs-panel',
-      component: LogsPanel,
-      meta: {
-        requiresAdmin: true,
+    path: '/',
+    name: 'landing-page',
+    component: LandingPage
+  },
+  {
+    path: '/admin/logs',
+    name: 'logs-panel',
+    component: LogsPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/users',
-      name: 'users-panel',
-      component: UsersPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/users',
+    name: 'users-panel',
+    component: UsersPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/families',
-      name: 'families-panel',
-      component: FamiliesPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/families',
+    name: 'families-panel',
+    component: FamiliesPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/news',
-      name: 'news-panel',
-      component: NewsPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/news',
+    name: 'news-panel',
+    component: NewsPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/admin/affinities',
-      name: 'affienities-panel',
-      component: AffienitiesPanel,
-      meta: {
-        requiresAdmin: true,
+    }
+  },
+  {
+    path: '/admin/affinities',
+    name: 'affienities-panel',
+    component: AffienitiesPanel,
+    meta: {
+      requiresAdmin: true,
 
-      }
-    },
-    {
-      path: '/news',
-      name: 'news',
-      component: News,
-      meta: {
-        requiresAuth: true,
-      }
-    },
-    {
-      path: '/tree',
-      name: 'tree',
-      component: Tree,
-      meta: {
-        requiresAuth: true,
-      }
-    },
-    {
-      path: '/gallery',
-      name: 'gallery',
-      component: Gallery,
-      meta: {
-        requiresAuth: true,
-      }
-    },
-    {
-      path: '/profile/:id',
-      name: 'profile',
-      component: Profile,
-      meta: {
-        requiresAuth: true,
-      }
-    },
+    }
+  },
+  {
+    path: '/news',
+    name: 'news',
+    component: News,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/tree',
+    name: 'tree',
+    component: Tree,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/gallery',
+    name: 'gallery',
+    component: Gallery,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/verify/:token',
+    name: 'verifyUser',
+    component: ActiveUser
+  }
 
   ]
 })
@@ -124,6 +125,9 @@ router.beforeEach(async (to, from, next) => {
     let result = await axios.get("auth/user");
     if (result) {
       store.dispatch("setSession", result.data);
+      let memberInfo = await axios.get("/auth/member/info");
+      if (memberInfo.status === 200)
+        store.dispatch("setMember", memberInfo.data.data[0]);
       user = result.data
     } else store.dispatch("deleteSession");
   }

@@ -2,15 +2,18 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<div class="centring-posts">
+				<v-card-title>Create your super duper new post!</v-card-title>
 				<create-post @newsCreated="refreshPost"></create-post>
+				<v-divider clas="text--primary" style="margin:0; width:90%" />
+				<posts-list :userProfile="user" :currentPosts="postsFilter" :refreshPost="refresh"></posts-list>
 			</div>
-			<posts-list :userProfile="user" :currentPosts="postsFilter" :refreshPost="refresh"></posts-list>
 		</v-col>
 	</v-container>
 </template>
 
 
 <script>
+import axios from "axios";
 import CreatePost from "../../components/create-post";
 import Posts from "../../components/posts";
 
@@ -22,7 +25,7 @@ export default {
 		refresh: false,
 		postsFilter: "getsomeposts"
 	}),
-	created() {},
+	async created() {},
 	methods: {
 		refreshPost() {
 			this.refresh = true;
@@ -39,7 +42,7 @@ export default {
 .centring-posts {
 	display: grid;
 	justify-items: center;
-	background-color: rgba(238, 238, 238, 0.95);
+	background-color: rgba(238, 238, 238, 0.75);
 	margin-top: 65px;
 	margin-bottom: 15px;
 }
