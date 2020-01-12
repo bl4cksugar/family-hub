@@ -4,7 +4,7 @@
 			<v-col md="12" class="d-flex align-center justify-center px-0">
 				<div class="card">
 					<v-form ref="form" v-model="valid" lazy-validation v-if="isValid">
-						<h1>Create your new password</h1>
+						<h5>{{member.message}}</h5>
 						<v-text-field
 							v-model="password"
 							:rules="[rules.required, rules.min]"
@@ -52,7 +52,7 @@ export default {
 	},
 	async created() {
 		let result = await axios
-			.get("auth/signup/activate/member/" + this.$route.params.token)
+			.get("password/find/" + this.$route.params.token)
 			.catch(error => {
 				this.message = error.data.message;
 				this.isValid = false;
@@ -60,6 +60,7 @@ export default {
 		if (result) {
 			this.member = result.data;
 		}
+		console.log(result);
 	},
 	methods: {
 		async submit() {

@@ -50,7 +50,7 @@ export default {
 			this.dialog = false;
 		},
 		async save() {
-			let result = await axios.put("auth/password/reset", {
+			let result = await axios.put("password/reset", {
 				email: this.resetPassword.email,
 				password: this.resetPassword.password,
 				password_confimation: this.resetPassword.password_confimation

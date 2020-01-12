@@ -103,14 +103,20 @@ export default {
 		})
 	},
 	async mounted() {
-		console.log(this.isLogged);
-		if (this.isLogged !== null) {
+		if (this.$route.meta.requiresAuth === true) {
 			let result = await axios.get("auth/pivot/get");
 			if (result) {
 				this.messages = result.data.count;
 			}
-			console.log(result);
 		}
+		setInterval(async () => {
+			if (this.$route.meta.requiresAuth === true) {
+				let result = await axios.get("auth/pivot/get");
+				if (result) {
+					this.messages = result.data.count;
+				}
+			}
+		}, 5000);
 	},
 	methods: {
 		async login() {
@@ -191,9 +197,32 @@ export default {
 			}
 		},
 		async resetPassword() {
-			let result = await axios.post(
-				"auth/passsword/create?email=" + this.email
-			);
+			let result = await axios
+				.post("password/create", {
+					email: this.email
+				})
+				.catch(error => {
+					this.$toasted.error(
+						"Something goes wrong, try again later",
+						{
+							theme: "toasted-primary",
+							position: "top-right",
+							fullWidth: true,
+							fitToScreen: false,
+							duration: 4000
+						}
+					);
+				});
+			if (result) {
+				this.$toasted.success(result.data.message, {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 4000
+				});
+			}
+			console.log(result);
 		}
 	}
 };

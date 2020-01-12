@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import LandingPage from './views/Home.vue'
 import ActiveUser from './views/ActiveUser.vue'
 import ActiveFounder from './views/ActiveFounder.vue'
+import ResetPassword from './views/ResetPassword.vue'
 
 import UsersPanel from './views/SideMenu/users-panel.vue'
 import FamiliesPanel from './views/SideMenu/families-panel.vue'
@@ -118,6 +119,11 @@ const router = new Router({
     path: '/verify/member/:token',
     name: 'verifyUser',
     component: ActiveUser
+  },
+  {
+    path: '/reset/:token',
+    name: 'resetPassword',
+    component: ResetPassword
   },
 
   ]
