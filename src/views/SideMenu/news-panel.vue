@@ -59,9 +59,9 @@
 						<v-icon>{{ item.active ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline" }}</v-icon>
 					</template>
 					<template v-slot:item.action="{ item }">
-						<v-btn class="mx-2" small depressed fab dark color="green" @click="editItem(item)">
+						<!-- <v-btn class="mx-2" small depressed fab dark color="green" @click="editItem(item)">
 							<v-icon dark small>mdi-pencil</v-icon>
-						</v-btn>
+						</v-btn>-->
 						<v-btn class="mx-2" small depressed fab dark color="red" @click="deleteItem(item)">
 							<v-icon dark small>mdi-delete</v-icon>
 						</v-btn>
@@ -129,28 +129,46 @@ export default {
 	methods: {
 		async sendPrefix() {
 			// this.loading = true;
-			let result = await axios.post(
-				"auth/admin/news/all?prefix= " + this.prefix
-			);
+			let result = await axios
+				.post("auth/admin/news/all?prefix= " + this.prefix)
+				.catch(error => {
+					console.log(error);
+					this.$toasted.error(error.data.message, {
+						theme: "toasted-primary",
+						position: "top-right",
+						fullWidth: true,
+						fitToScreen: false,
+						duration: 3000
+					});
+					this.news = [];
+				});
 			if (result) {
 				this.news = result.data.data;
 			}
 			// this.loading = false;
 		},
 
-		editItem(item) {
+		async editItem(item) {
 			this.editedIndex = this.news.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.dialog = true;
+
+			let result = await axios.post(
+				"/auth/admin/news/edit?id=" + item.id + "&prefix=" + this.prefix
+			);
 		},
 
 		async deleteItem(item) {
 			const index = this.news.indexOf(item);
 			confirm("Are you sure you want to delete this item?") &&
 				this.news.splice(index, 1);
-			let result = await axios.post("/auth/news/delete", {
-				id: item.id
-			});
+
+			let result = await axios.delete(
+				"/auth/admin/news/delete?id=" +
+					item.id +
+					"&prefix=" +
+					this.prefix
+			);
 		},
 
 		close() {

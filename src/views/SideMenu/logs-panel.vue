@@ -53,9 +53,8 @@ export default {
 		this.loading = true;
 		let result = await axios.get("/auth/admin/logs/all");
 		if (result) {
-			this.logs = result.data.data;
+			this.logs = result.data.data.reverse();
 		}
-		console.log(result);
 		this.loading = false;
 	}
 };

@@ -40,14 +40,11 @@ export default {
 		uploadPercentage: 0
 	}),
 	watch: {
-		uploadPercentage(newVal, oldVal) {
-			console.log(newVal, oldVal);
-		}
+		uploadPercentage(newVal, oldVal) {}
 	},
 	methods: {
 		onFileChanged(event) {
 			this.selectedFile = event.target.files[0];
-			console.log(this.selectedFile);
 		},
 		async onUpload() {
 			const formData = new FormData();
@@ -57,20 +54,26 @@ export default {
 				this.selectedFile,
 				this.selectedFile.name
 			);
-
-			console.log(formData);
-			await axios.post("auth/gallery/add", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data"
-				},
-				onUploadProgress: function(progressEvent) {
-					this.uploadPercentage = parseInt(
-						Math.round(
-							(progressEvent.loaded / progressEvent.total) * 100
-						)
-					);
-				}.bind(this)
-			});
+			await axios
+				.post("auth/gallery/add", formData, {
+					headers: {
+						"Content-Type": "multipart/form-data"
+					},
+					onUploadProgress: function(progressEvent) {
+						this.uploadPercentage = parseInt(
+							Math.round(
+								(progressEvent.loaded / progressEvent.total) *
+									100
+							)
+						);
+					}.bind(this)
+				})
+				.then(err => {
+					setTimeout(function() {
+						this.uploadPercentage = 0;
+					}, 1000);
+				});
+			console.log(this.uploadPercentage);
 			this.$emit("refreshGallery");
 		}
 	}

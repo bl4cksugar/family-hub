@@ -5,7 +5,12 @@
 				<v-card-title>Create your super duper new post!</v-card-title>
 				<create-post @newsCreated="refreshPost"></create-post>
 				<v-divider clas="text--primary" style="margin:0; width:90%" />
-				<posts-list :userProfile="user" :currentPosts="postsFilter" :refreshPost="refresh"></posts-list>
+				<posts-list
+					:userProfile="user"
+					:currentPosts="postsFilter"
+					:refreshPost="refresh"
+					@refreshed="refreshPost"
+				></posts-list>
 			</div>
 		</v-col>
 	</v-container>
@@ -28,7 +33,7 @@ export default {
 	async created() {},
 	methods: {
 		refreshPost() {
-			this.refresh = true;
+			this.refresh = !this.refresh;
 		}
 	},
 	components: {

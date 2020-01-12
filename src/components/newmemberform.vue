@@ -11,120 +11,123 @@
 				<v-card-text>
 					<v-container>
 						<v-row>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field v-model="first_name" label="First Name*" required></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field v-model="middle_name" label="Middle Name" required></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field v-model="last_name" label="Last Name*" required></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-menu
-									ref="menu"
-									v-model="menu"
-									:close-on-content-click="false"
-									transition="scale-transition"
-									offset-y
-									min-width="290px"
-								>
-									<template v-slot:activator="{ on }">
-										<v-text-field
-											color="grey"
-											background-color="rgba(255, 255, 255, 0.9)"
+							<v-form ref="form" v-model="valid" lazy-validation>
+								<v-col cols="12">
+									<v-text-field v-model="first_name" label="First Name*" required :rules="[rules.required]"></v-text-field>
+								</v-col>
+								<v-col cols="12">
+									<v-text-field v-model="middle_name" label="Middle Name"></v-text-field>
+								</v-col>
+								<v-col cols="12">
+									<v-text-field v-model="last_name" label="Last Name"></v-text-field>
+								</v-col>
+								<v-col cols="12">
+									<v-menu
+										ref="menu"
+										v-model="menu"
+										:close-on-content-click="false"
+										transition="scale-transition"
+										offset-y
+										min-width="290px"
+									>
+										<template v-slot:activator="{ on }">
+											<v-text-field
+												color="grey"
+												background-color="rgba(255, 255, 255, 0.9)"
+												v-model="date"
+												label="Date of birth"
+												readonly
+												v-on="on"
+											></v-text-field>
+										</template>
+										<v-date-picker
+											ref="picker"
 											v-model="date"
-											label="Date of birth"
-											readonly
-											v-on="on"
-										></v-text-field>
-									</template>
-									<v-date-picker
-										ref="picker"
-										v-model="date"
-										:max="death === null ? new Date().toISOString().substr(0, 10) : death"
-										min="1950-01-01"
-										@change="save"
-									></v-date-picker>
-								</v-menu>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-menu
-									ref="menu2"
-									v-model="menu2"
-									:close-on-content-click="false"
-									transition="scale-transition"
-									offset-y
-									min-width="290px"
-								>
-									<template v-slot:activator="{ on }">
-										<v-text-field
-											color="grey"
-											background-color="rgba(255, 255, 255, 0.9)"
+											:max="death === null ? new Date().toISOString().substr(0, 10) : death"
+											min="1950-01-01"
+											@change="save"
+										></v-date-picker>
+									</v-menu>
+								</v-col>
+								<v-col cols="12">
+									<v-menu
+										ref="menu2"
+										v-model="menu2"
+										:close-on-content-click="false"
+										transition="scale-transition"
+										offset-y
+										min-width="290px"
+									>
+										<template v-slot:activator="{ on }">
+											<v-text-field
+												color="grey"
+												background-color="rgba(255, 255, 255, 0.9)"
+												v-model="death"
+												label="Date of death"
+												readonly
+												v-on="on"
+											></v-text-field>
+										</template>
+										<v-date-picker
+											ref="picker"
 											v-model="death"
-											label="Date of death"
-											readonly
-											v-on="on"
-										></v-text-field>
-									</template>
-									<v-date-picker
-										ref="picker"
-										v-model="death"
-										:max="new Date().toISOString().substr(0, 10)"
-										:min="date"
-										@change="savedeath"
-									></v-date-picker>
-								</v-menu>
-							</v-col>
-							<v-col cols="12">
-								<v-text-field
-									hint="If you want to invite this member to tree, you have to add a email"
-									persistent-hint
-									v-model="email"
-									label="Email"
-								></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" v-if="!isFounder">
-								<v-checkbox v-model="isChild" label="Mark as your child"></v-checkbox>
-							</v-col>
-							<v-col cols="12" sm="6" v-if="!isFounder">
-								<v-checkbox v-model="isPartner" label="Mark as partner"></v-checkbox>
-							</v-col>
-							<v-col cols="12" sm="6" v-if="isFounder">
-								<v-select
-									v-model="parentId"
-									:items="familly"
-									:disabled="disableParent"
-									item-text="name"
-									hint="Parent of member, which you want to add"
-									persistent-hint
-									clearable
-									item-value="relation_id"
-									label="Parent*"
-									required
-								></v-select>
-							</v-col>
-							<v-col cols="12" sm="6" v-if="isFounder">
-								<v-select
-									v-model="partnerId"
-									:items="familly"
-									:disabled="disablePartner"
-									clearable
-									hint="Partner of member, which you want to add"
-									persistent-hint
-									item-text="name"
-									item-value="user_id"
-									label="Partner*"
-									required
-								></v-select>
-							</v-col>
-							<v-col cols="12" sm="6" v-if="isFounder">
-								<v-checkbox
-									v-model="isHeadOfFamilly"
-									:disabled="disableChild"
-									label="Mark as head of familly"
-								></v-checkbox>
-							</v-col>
+											:max="new Date().toISOString().substr(0, 10)"
+											:min="date"
+											@change="savedeath"
+										></v-date-picker>
+									</v-menu>
+								</v-col>
+								<v-col cols="12">
+									<v-text-field
+										:rules="[rules.required, rules.email]"
+										hint="If you want to invite this member to tree, you have to add a email"
+										persistent-hint
+										v-model="email"
+										label="Email*"
+									></v-text-field>
+								</v-col>
+								<v-col cols="12" v-if="!isFounder">
+									<v-checkbox v-model="isChild" label="Mark as your child"></v-checkbox>
+								</v-col>
+								<v-col cols="12" v-if="!isFounder">
+									<v-checkbox v-model="isPartner" label="Mark as partner"></v-checkbox>
+								</v-col>
+								<v-col cols="12" v-if="isFounder">
+									<v-select
+										v-model="parentId"
+										:items="familly"
+										:disabled="disableParent"
+										item-text="name"
+										hint="Parent of member, which you want to add"
+										persistent-hint
+										clearable
+										item-value="relation_id"
+										label="Parent*"
+										required
+									></v-select>
+								</v-col>
+								<v-col cols="12" v-if="isFounder">
+									<v-select
+										v-model="partnerId"
+										:items="familly"
+										:disabled="disablePartner"
+										clearable
+										hint="Partner of member, which you want to add"
+										persistent-hint
+										item-text="name"
+										item-value="user_id"
+										label="Partner*"
+										required
+									></v-select>
+								</v-col>
+								<v-col cols="12" v-if="isFounder">
+									<v-checkbox
+										v-model="isHeadOfFamilly"
+										:disabled="disableChild"
+										label="Mark as head of familly"
+									></v-checkbox>
+								</v-col>
+							</v-form>
 						</v-row>
 					</v-container>
 					<small>*indicates required field</small>
@@ -147,6 +150,10 @@ export default {
 		familly: {
 			type: Array,
 			required: true
+		},
+		isFounder: {
+			type: Boolean,
+			required: true
 		}
 	},
 	data: () => ({
@@ -167,7 +174,15 @@ export default {
 		partnerId: null,
 		menu: null,
 		success: false,
-		menu2: null
+		menu2: null,
+		valid: false,
+		rules: {
+			required: value => !!value || "Required.",
+			email: value => {
+				const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+				return pattern.test(value) || "Invalid e-mail.";
+			}
+		}
 	}),
 	watch: {
 		isChild() {
@@ -190,10 +205,7 @@ export default {
 	computed: {
 		...mapGetters({
 			member: "member"
-		}),
-		isFounder() {
-			return this.member.user_id === 48;
-		}
+		})
 	},
 	methods: {
 		async submit() {
@@ -215,27 +227,61 @@ export default {
 			}
 			let result;
 			if (this.death !== null) {
-				result = await axios.post("auth/member/add/deceased", {
-					first_name: this.first_name,
-					middle_name: this.middle_name,
-					last_name: this.last_name,
-					email: this.email,
-					day_of_birth: this.date,
-					day_of_death: this.death,
-					parent_id: parentId,
-					partner_id: partnerId
-				});
+				result = await axios
+					.post("auth/member/add/deceased", {
+						first_name: this.first_name,
+						middle_name: this.middle_name,
+						last_name: this.last_name,
+						email: this.email,
+						day_of_birth: this.date,
+						day_of_death: this.death,
+						parent_id: parentId,
+						partner_id: partnerId
+					})
+					.catch(error => {
+						if (error.status === 422) {
+							for (var item in error.data.errors) {
+								this.$toasted.error(
+									error.data.errors[item][0],
+									{
+										theme: "toasted-primary",
+										position: "top-right",
+										fullWidth: true,
+										fitToScreen: false,
+										duration: 3000
+									}
+								);
+							}
+						}
+					});
 			} else {
-				result = await axios.post("auth/member/add", {
-					first_name: this.first_name,
-					middle_name: this.middle_name,
-					last_name: this.last_name,
-					email: this.email,
-					day_of_birth: this.date,
-					day_of_death: this.death,
-					parent_id: parentId,
-					partner_id: partnerId
-				});
+				result = await axios
+					.post("auth/member/add", {
+						first_name: this.first_name,
+						middle_name: this.middle_name,
+						last_name: this.last_name,
+						email: this.email,
+						day_of_birth: this.date,
+						day_of_death: this.death,
+						parent_id: parentId,
+						partner_id: partnerId
+					})
+					.catch(error => {
+						if (error.status === 422) {
+							for (var item in error.data.errors) {
+								this.$toasted.error(
+									error.data.errors[item][0],
+									{
+										theme: "toasted-primary",
+										position: "top-right",
+										fullWidth: true,
+										fitToScreen: false,
+										duration: 3000
+									}
+								);
+							}
+						}
+					});
 			}
 
 			if (this.isHeadOfFamilly === true) {
@@ -276,7 +322,7 @@ export default {
 					duration: 3000
 				});
 			} else {
-				this.$toasted.success("Error, try again!", {
+				this.$toasted.error("Error, try again!", {
 					theme: "toasted-primary",
 					position: "top-right",
 					fullWidth: true,

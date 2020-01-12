@@ -51,10 +51,10 @@
 							:rules="[rules.required]"
 						></v-text-field>
 						<div class="my-2">
-							<v-btn text small color="primary">you forgotten your password? Remind</v-btn>
+							<v-btn text small color="primary" @click="resetPassword">I have forgot my password</v-btn>
 						</div>
 						<v-btn @click="login" style="margin:10px">
-							<span>SIGN UP</span>
+							<span>SIGN IN</span>
 						</v-btn>
 					</v-form>
 				</v-container>
@@ -102,11 +102,21 @@ export default {
 			isLogged: "user"
 		})
 	},
-	async created() {
-		let result = await axios.get("auth/pivot/get");
-		if (result) {
-			this.messages = result.data.count;
+	async mounted() {
+		if (this.$route.meta.requiresAuth === true) {
+			let result = await axios.get("auth/pivot/get");
+			if (result) {
+				this.messages = result.data.count;
+			}
 		}
+		setInterval(async () => {
+			if (this.$route.meta.requiresAuth === true) {
+				let result = await axios.get("auth/pivot/get");
+				if (result) {
+					this.messages = result.data.count;
+				}
+			}
+		}, 5000);
 	},
 	methods: {
 		async login() {
@@ -145,8 +155,8 @@ export default {
 									memberInfo.data.data[0]
 								);
 							if (
-								memberInfo.data.data[0].first_name.length > 0 &&
-								memberInfo.data.data[0].last_name.length > 0
+								memberInfo.data.data[0].first_name !== null &&
+								memberInfo.data.data[0].last_name !== null
 							) {
 								if (user.data.type === "admin")
 									this.$router.push("admin/logs");
@@ -185,6 +195,34 @@ export default {
 					content: "Something goes wrong! Try again"
 				};
 			}
+		},
+		async resetPassword() {
+			let result = await axios
+				.post("password/create", {
+					email: this.email
+				})
+				.catch(error => {
+					this.$toasted.error(
+						"Something goes wrong, try again later",
+						{
+							theme: "toasted-primary",
+							position: "top-right",
+							fullWidth: true,
+							fitToScreen: false,
+							duration: 4000
+						}
+					);
+				});
+			if (result) {
+				this.$toasted.success(result.data.message, {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 4000
+				});
+			}
+			console.log(result);
 		}
 	}
 };

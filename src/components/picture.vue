@@ -7,7 +7,7 @@
 						<v-list-item-title style="display:flex; justify-content:space-between">
 							<span class="headline">{{picture.filename}}</span>
 							<div>
-								<v-btn icon @click="deletePicture(picture.id)">
+								<v-btn v-if="member.user_id ===picture.author_id" icon @click="deletePicture(picture.id)">
 									<v-icon color="red">mdi-delete</v-icon>
 								</v-btn>
 							</div>
@@ -33,6 +33,7 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 
 export default {
 	props: ["refreshPicture"],
@@ -41,10 +42,18 @@ export default {
 		loading: false,
 		loader: null
 	}),
+	computed: {
+		...mapGetters({
+			member: "member"
+		})
+	},
 	watch: {
 		async refreshPicture(after, before) {
-			console.log("dupa");
-			await this.getPicture();
+			console.log(after);
+			if (after === true) {
+				await this.getPicture();
+				this.$emit("refreshed");
+			}
 		}
 	},
 	async created() {
@@ -54,17 +63,15 @@ export default {
 		async getPicture() {
 			let result = await axios.get("auth/gallery/all");
 			if (result) {
-				this.gallery = result.data.data;
+				this.gallery = result.data.data.reverse();
 			}
 		},
 
 		async deletePicture(pictureId) {
-			console.log(pictureId);
 			if (confirm("Do you really want to delete?")) {
 				let result = await axios.delete(
 					"auth/gallery/delete?id=" + pictureId
 				);
-				console.log(result);
 				this.getPicture();
 			}
 		}

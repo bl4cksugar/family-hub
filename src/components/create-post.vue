@@ -58,10 +58,6 @@ export default {
 			if (this.isVisible) this.isVisible = false;
 			else this.isVisible = true;
 		}
-		// photoSet(fileUrl) {
-		// 	console.log(fileUrl);
-		// 	this.ImgUrl = fileUrl;
-		// }
 	},
 	components: {}
 };
