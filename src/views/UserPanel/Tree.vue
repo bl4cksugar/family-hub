@@ -42,7 +42,6 @@ export default {
 	},
 	watch: {
 		async familly(newVal) {
-			console.log(newVal);
 			if (newVal !== null)
 				newVal.forEach(item => {
 					return item.img !== null
@@ -54,26 +53,6 @@ export default {
 	async created() {
 		let member = await axios.get("auth/member/info");
 		this.isFounder = member.data.founder;
-		console.log(member);
-		let pupa2 = await axios.get("auth/tree");
-		console.log(pupa2);
-		let result = await axios.get("auth/relation/all");
-		console.log(result);
-		// let result3 = await axios.get("auth/member/info?id=" + 16);
-		// console.log(result3);
-		// let pupa = await axios.post("auth/relation/add", {
-		// 	partner_1_id: "148",
-		// 	partner_2_id: "",
-		// 	parent_id: "1"
-		// });
-		// console.log(pupa);
-		// let dupa = await axios.put("auth/relation/update", {
-		// 	id: "2",
-		// 	partner_1_id: "116",
-		// 	partner_2_id: "",
-		// 	parent_id: "1"
-		// });
-		// console.log(dupa);
 	},
 	methods: {
 		newGroup() {

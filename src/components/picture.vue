@@ -49,7 +49,11 @@ export default {
 	},
 	watch: {
 		async refreshPicture(after, before) {
-			await this.getPicture();
+			console.log(after);
+			if (after === true) {
+				await this.getPicture();
+				this.$emit("refreshed");
+			}
 		}
 	},
 	async created() {
@@ -59,7 +63,7 @@ export default {
 		async getPicture() {
 			let result = await axios.get("auth/gallery/all");
 			if (result) {
-				this.gallery = result.data.data;
+				this.gallery = result.data.data.reverse();
 			}
 		},
 

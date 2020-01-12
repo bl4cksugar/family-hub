@@ -98,14 +98,17 @@ export default {
 	},
 	watch: {
 		async refreshPost(after, before) {
-			await this.getPosts();
+			if (after === true) {
+				await this.getPosts();
+				this.$emit("refreshed");
+			}
 		}
 	},
 	methods: {
 		async getPosts() {
 			let result = await axios.get("auth/news/all");
 			if (result) {
-				this.news = result.data.data;
+				this.news = result.data.data.reverse();
 			}
 		},
 		async deletePosts(newsId) {

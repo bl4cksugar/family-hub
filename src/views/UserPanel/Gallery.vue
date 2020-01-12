@@ -5,7 +5,12 @@
 			<div class="centring-posts">
 				<uploadFile @refreshGallery="refreshGallery"></uploadFile>
 				<v-divider clas="text--primary" style="margin:0; width:90%" />
-				<picture-list :userProfile="user" :currentPicture="pictureFilter" :refreshPicture="refresh"></picture-list>
+				<picture-list
+					:userProfile="user"
+					:currentPicture="pictureFilter"
+					:refreshPicture="refresh"
+					@refreshed="refreshGallery"
+				></picture-list>
 			</div>
 		</v-col>
 	</v-container>
@@ -27,7 +32,7 @@ export default {
 	created() {},
 	methods: {
 		refreshGallery() {
-			this.refresh = true;
+			this.refresh = !this.refresh;
 		}
 	},
 	components: {

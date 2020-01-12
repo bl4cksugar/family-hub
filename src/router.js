@@ -111,7 +111,7 @@ const router = new Router({
   },
   {
     path: '/verify/:token',
-    name: 'verifyUser',
+    name: 'verifyFounder',
     component: ActiveFounder
   },
   {

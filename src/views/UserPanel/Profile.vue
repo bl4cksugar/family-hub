@@ -4,9 +4,7 @@
 			<v-card style="background-color: rgba(238, 238, 238, 0.75);">
 				<v-card-text style="justify-content:start;align-items:center; display:flex;">
 					<v-avatar color="green" size="124">
-						<img
-							:src="'http://family.przedprojekt.com/storage/' + member.avatar !==null? member.avatar :'' "
-						/>
+						<img :src="'http://family.przedprojekt.com/storage/' + member.avatar " />
 					</v-avatar>
 					<v-col>
 						<h1
@@ -59,6 +57,7 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import store from "../../store";
 import EditProfile from "../../components/edit-profile";
 import ResetPassword from "../../components/reset";
 export default {
@@ -124,11 +123,20 @@ export default {
 				this.selectedFile.name
 			);
 
-			await axios.post("auth/member/update/avatar", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data"
+			let result = await axios.post(
+				"auth/member/update/avatar",
+				formData,
+				{
+					headers: {
+						"Content-Type": "multipart/form-data"
+					}
 				}
-			});
+			);
+			if (result) {
+				let memberInfo = await axios.get("/auth/member/info");
+				if (memberInfo.status === 200)
+					store.dispatch("setMember", memberInfo.data.data[0]);
+			}
 		}
 	}
 };

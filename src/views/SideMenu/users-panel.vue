@@ -139,6 +139,7 @@ export default {
 			let result = await axios.post("/auth/user/deactive", {
 				id: item.id
 			});
+			console.log(result);
 		},
 
 		close() {

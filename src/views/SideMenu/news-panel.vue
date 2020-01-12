@@ -129,9 +129,19 @@ export default {
 	methods: {
 		async sendPrefix() {
 			// this.loading = true;
-			let result = await axios.post(
-				"auth/admin/news/all?prefix= " + this.prefix
-			);
+			let result = await axios
+				.post("auth/admin/news/all?prefix= " + this.prefix)
+				.catch(error => {
+					console.log(error);
+					this.$toasted.error(error.data.message, {
+						theme: "toasted-primary",
+						position: "top-right",
+						fullWidth: true,
+						fitToScreen: false,
+						duration: 3000
+					});
+					this.news = [];
+				});
 			if (result) {
 				this.news = result.data.data;
 			}

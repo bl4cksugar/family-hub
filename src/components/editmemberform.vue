@@ -157,7 +157,6 @@ export default {
 	}),
 	watch: {
 		async memberId(newVal) {
-			console.log(newVal);
 			if (newVal === undefined) this.memberId = null;
 			if (newVal !== null) {
 				this.isPicked = true;
@@ -167,7 +166,6 @@ export default {
 				let result = await axios.get(
 					"auth/member/info/one/" + this.editableMember.user_id
 				);
-				console.log(result.data.data[0]);
 				this.editableMember = result.data.data[0];
 			} else this.isPicked = false;
 		}

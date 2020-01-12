@@ -314,55 +314,21 @@ export default {
 				this.$emit("memberCreated");
 
 				this.dialog = false;
-				this.$toasted
-					.success("Member successfully added", {
-						theme: "toasted-primary",
-						position: "top-right",
-						fullWidth: true,
-						fitToScreen: false,
-						duration: 3000
-					})
-					.catch(error => {
-						if (error.status === 422) {
-							for (var item in error.data.errors) {
-								this.$toasted.error(
-									error.data.errors[item][0],
-									{
-										theme: "toasted-primary",
-										position: "top-right",
-										fullWidth: true,
-										fitToScreen: false,
-										duration: 3000
-									}
-								);
-							}
-						}
-					});
+				this.$toasted.success("Member successfully added", {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 3000
+				});
 			} else {
-				this.$toasted
-					.error("Error, try again!", {
-						theme: "toasted-primary",
-						position: "top-right",
-						fullWidth: true,
-						fitToScreen: false,
-						duration: 3000
-					})
-					.catch(error => {
-						if (error.status === 422) {
-							for (var item in error.data.errors) {
-								this.$toasted.error(
-									error.data.errors[item][0],
-									{
-										theme: "toasted-primary",
-										position: "top-right",
-										fullWidth: true,
-										fitToScreen: false,
-										duration: 3000
-									}
-								);
-							}
-						}
-					});
+				this.$toasted.error("Error, try again!", {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 3000
+				});
 			}
 		},
 		save(date) {

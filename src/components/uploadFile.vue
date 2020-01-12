@@ -54,18 +54,26 @@ export default {
 				this.selectedFile,
 				this.selectedFile.name
 			);
-			await axios.post("auth/gallery/add", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data"
-				},
-				onUploadProgress: function(progressEvent) {
-					this.uploadPercentage = parseInt(
-						Math.round(
-							(progressEvent.loaded / progressEvent.total) * 100
-						)
-					);
-				}.bind(this)
-			});
+			await axios
+				.post("auth/gallery/add", formData, {
+					headers: {
+						"Content-Type": "multipart/form-data"
+					},
+					onUploadProgress: function(progressEvent) {
+						this.uploadPercentage = parseInt(
+							Math.round(
+								(progressEvent.loaded / progressEvent.total) *
+									100
+							)
+						);
+					}.bind(this)
+				})
+				.then(err => {
+					setTimeout(function() {
+						this.uploadPercentage = 0;
+					}, 1000);
+				});
+			console.log(this.uploadPercentage);
 			this.$emit("refreshGallery");
 		}
 	}
