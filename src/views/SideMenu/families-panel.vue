@@ -2,7 +2,14 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<v-card>
-				<v-data-table :headers="headers" :items="families" :search="search" class="elevation-1">
+				<v-data-table
+					:headers="headers"
+					:items="families"
+					:search="search"
+					class="elevation-1"
+					:loading="loading"
+					loading-text="Loading... Please wait"
+				>
 					<template v-slot:top>
 						<v-toolbar flat color="white">
 							<v-toolbar-title>Families</v-toolbar-title>
@@ -97,16 +104,18 @@ export default {
 				boolean: false
 			},
 
-			families: []
+			families: [],
+			loading: false
 		};
 	},
 	async created() {
 		let result = await axios.get("/auth/family/all");
-		console.log(result);
 
 		if (result) {
+			this.loading = true;
 			this.families = result.data.data;
 		}
+		this.loading = false;
 	},
 	computed: {
 		formTitle() {
@@ -144,9 +153,7 @@ export default {
 
 		async save() {
 			if (this.editedIndex > -1) {
-				console.log("1");
 				Object.assign(this.families[this.editedIndex], this.editedItem);
-				console.log(this.editedItem);
 				let result = await axios
 					.put("auth/family/update", {
 						id: this.editedItem.id,
@@ -154,7 +161,6 @@ export default {
 						founder_id: this.editedItem.founder_id
 					})
 					.catch(error => {
-						console.log(error);
 						this.alert = {
 							state: true,
 							type: "error",
@@ -162,9 +168,7 @@ export default {
 								"This founder ID is already used in other family!"
 						};
 					});
-				console.log(result);
 			} else {
-				console.log("2");
 				this.families.push(this.editedItem);
 			}
 			this.close();

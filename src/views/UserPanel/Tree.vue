@@ -1,198 +1,140 @@
 <template>
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
+			<div class="row" style="margin-top:50px">
+				<new-member-form :isFounder="isFounder" :familly="familly" @memberCreated="refreshTree"></new-member-form>
+				<edit-member-form :isFounder="isFounder" :familly="familly" v-if="isFounder"></edit-member-form>
+				<delete-tree v-if="isFounder" @treeDeleted="refreshTree"></delete-tree>
+			</div>
 			<div id="tree"></div>
 		</v-col>
 	</v-container>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import NewMemberForm from "../../components/newmemberform";
+import EditMemberForm from "../../components/editmemberform";
+import DeleteTree from "../../components/deleteTree";
+import axios from "axios";
 export default {
-	components: {},
-
+	components: {
+		NewMemberForm,
+		EditMemberForm,
+		DeleteTree
+	},
 	data() {
 		return {
-			familly: [
-				{
-					id: 1,
-					tags: ["f1"],
-					name: "King George VI",
-					img: "https://balkangraph.com/js/img/f1.png"
-				},
-				{
-					id: 2,
-					tags: ["f1"],
-					name: "Queen Elizabeth",
-					title: "The Queen Mother",
-					img: "https://balkangraph.com/js/img/f2.png"
-				},
-				{
-					id: 3,
-					tags: ["f2"],
-					pid: 2,
-					name: "Prince Philip",
-					title: "Duke of Edinburgh",
-					img: "https://balkangraph.com/js/img/f3.png"
-				},
-				{
-					id: 4,
-					tags: ["f2"],
-					pid: 2,
-					name: "Queen Elizabeth II",
-					img: "https://balkangraph.com/js/img/f5.png"
-				},
-				{
-					id: 5,
-					pid: 2,
-					name: "Princess Margaret",
-					img: "https://balkangraph.com/js/img/f6.png"
-				},
-				{
-					id: 6,
-					tags: ["f3"],
-					pid: 4,
-					name: "Camila",
-					title: "Duchess of Cornwall",
-					img: "https://balkangraph.com/js/img/f7.png"
-				},
-				{
-					id: 7,
-					tags: ["f3"],
-					pid: 4,
-					name: "Charles",
-					title: "Prince of Wales",
-					img: "https://balkangraph.com/js/img/f8.png"
-				},
-				{
-					id: 8,
-					tags: ["f3"],
-					pid: 4,
-					name: "Diana",
-					title: "Princess of Wales",
-					img: "https://balkangraph.com/js/img/f9.png"
-				},
-				{
-					id: 9,
-					pid: 4,
-					name: "Anne",
-					title: "Princess Royal",
-					img: "https://balkangraph.com/js/img/f10.png"
-				},
-				{
-					id: 10,
-					pid: 4,
-					name: "Prince Andrew",
-					title: "Duke of York",
-					img: "https://balkangraph.com/js/img/f11.png"
-				},
-				{
-					id: 11,
-					pid: 4,
-					name: "Prince Edward",
-					title: "Earl of Wessex",
-					img: "https://balkangraph.com/js/img/f12.png"
-				},
-				{
-					id: 12,
-					tags: ["f4"],
-					pid: 7,
-					name: "Catherine",
-					title: "Duchess of Cambridge",
-					img: "https://balkangraph.com/js/img/f13.png"
-				},
-				{
-					id: 13,
-					tags: ["f4"],
-					pid: 7,
-					name: "Prince William",
-					title: "Duch of Cambridge",
-					img: "https://balkangraph.com/js/img/f14.png"
-				},
-				{
-					id: 14,
-					tags: ["f7"],
-					pid: 7,
-					name: "Prince Harry",
-					img: "https://balkangraph.com/js/img/f15.png"
-				},
-				{
-					id: 15,
-					tags: ["f7"],
-					pid: 7,
-					name: "Meghan Markle",
-					img: "https://balkangraph.com/js/img/f16.png"
-				},
-				{
-					id: 16,
-					pid: 12,
-					name: "Prince George of Cambridge",
-					img: "https://balkangraph.com/js/img/f17.png"
-				},
-				{
-					id: 17,
-					pid: 12,
-					name: "Prince Charlotte of Cambridge",
-					img: "https://balkangraph.com/js/img/f18.png"
-				},
-				{
-					id: 18,
-					pid: 12,
-					name: "Prince Louis of Cambridge",
-					img: "https://balkangraph.com/js/img/f19.png"
-				}
-			],
-			familyGroupTag: {},
-			tags: {}
+			familly: [],
+			familyGroupTag: {
+				group: true,
+				template: "group_grey",
+				groupState: OrgChart.EXPAND
+			},
+			tags: {},
+			isFounder: false
 		};
+	},
+	computed: {
+		...mapGetters({
+			member: "member"
+		})
+	},
+	watch: {
+		async familly(newVal) {
+			if (newVal !== null)
+				newVal.forEach(item => {
+					return item.img !== null
+						? (item.img = `http://family.przedprojekt.com/storage/${item.img}`)
+						: (item.img = "");
+				});
+		}
+	},
+	async created() {
+		let member = await axios.get("auth/member/info");
+		this.isFounder = member.data.founder;
 	},
 	methods: {
 		newGroup() {
-			this.tags[
-				`f${Object.keys(this.tags).length + 1}`
-			] = this.familyGroupTag;
+			const tagNumber = Object.keys(this.tags).length + 1;
+			this.tags[`marriage${tagNumber}`] = this.familyGroupTag;
+			return `marriage${tagNumber}`;
+		},
+		groupRender() {
+			this.familly.forEach(item => {
+				if (item.partnerId && !item.tags) {
+					const group = this.newGroup();
+					item.tags = [group];
+					const partner = this.familly.find(
+						member => member.id === item.partnerId
+					);
+					partner.tags = [group];
+				}
+			});
+		},
+		async refreshTree() {
+			await this.mountTree();
+		},
+		async mountTree() {
+			let result = await axios.get("/auth/tree");
+			if (result.data.data !== null) this.familly = result.data.data;
+			if (this.familly.length === 0) {
+				let result = await axios.post("auth/relation/add", {
+					partner_1_id: this.member.user_id,
+					partner_2_id: "",
+					parent_id: null
+				});
+				this.mountTree();
+				return;
+			}
+			this.groupRender();
+
+			OrgChart.templates.diva.field_2 =
+				'<text class="field_2" style="font-size: 12px;" fill="#ffffff" x="10" y="100" text-anchor="middle">{val}</text>';
+			OrgChart.templates.diva.field_3 =
+				'<text class="field_3" style="font-size: 14px;" fill="#ffffff" x="100" y="160" text-anchor="middle">{val}</text>';
+
+			var chart = new OrgChart(document.getElementById("tree"), {
+				template: "diva",
+				nodeMouseClick: OrgChart.action.details,
+				nodeMenu: {
+					details: { text: "Details" },
+					remove: { text: "Remove" }
+				},
+				nodeBinding: {
+					field_0: "name",
+					field_1: "birthDay",
+					field_2: "id",
+					field_3: "deathDay",
+					img_0: "img"
+				},
+				tags: this.tags,
+				nodes: this.familly
+			});
+			chart.editUI.on("field", function(sender, args) {
+				if (args.name.startsWith("marriage")) {
+					return false;
+				}
+				if (args.name == "id") {
+					return false;
+				}
+				if (args.name == "partnerId") {
+					return false;
+				}
+				if (args.name == "user_id") {
+					return false;
+				}
+				if (args.name == "relation_id") {
+					return false;
+				}
+			});
 		}
 	},
-	mounted() {
-		this.familyGroupTag = {
-			group: true,
-			template: "group_grey",
-			groupState: OrgChart.EXPAND
-		};
-
-		this.tags = {
-			f1: this.familyGroupTag,
-			f2: this.familyGroupTag,
-			f3: this.familyGroupTag,
-			f4: this.familyGroupTag,
-			f5: this.familyGroupTag,
-			f6: this.familyGroupTag
-		};
-
-		this.newGroup();
-
-		var chart = new OrgChart(document.getElementById("tree"), {
-			template: "diva",
-			nodeMouseClick: OrgChart.action.details,
-			nodeMenu: {
-				details: { text: "Details" },
-				add: { text: "Add New" },
-				edit: { text: "Edit" },
-				remove: { text: "Remove" }
-			},
-			nodeBinding: {
-				field_0: "name",
-				field_1: "title",
-				img_0: "img"
-			},
-			tags: this.tags,
-			nodes: this.familly
-		});
+	async mounted() {
+		await this.mountTree();
 	}
 };
 </script>
 
 <style scoped>
-#btn {
-	float: left;
-}
 </style>

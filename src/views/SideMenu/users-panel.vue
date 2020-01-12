@@ -2,7 +2,14 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<v-card>
-				<v-data-table :headers="headers" :items="users" :search="search" class="elevation-1">
+				<v-data-table
+					:headers="headers"
+					:items="users"
+					:search="search"
+					class="elevation-1"
+					:loading="loading"
+					loading-text="Loading... Please wait"
+				>
 					<template v-slot:top>
 						<v-toolbar flat color="white">
 							<v-toolbar-title>Users</v-toolbar-title>
@@ -96,15 +103,17 @@ export default {
 				boolean: false
 			},
 
-			users: []
+			users: [],
+			loading: false
 		};
 	},
 	async created() {
+		this.loading = true;
 		let result = await axios.get("/auth/user/all");
-		console.log(result);
 		if (result) {
 			this.users = result.data.data;
 		}
+		this.loading = false;
 	},
 	computed: {
 		formTitle() {
@@ -130,6 +139,7 @@ export default {
 			let result = await axios.post("/auth/user/deactive", {
 				id: item.id
 			});
+			console.log(result);
 		},
 
 		close() {
@@ -142,16 +152,12 @@ export default {
 
 		async save() {
 			if (this.editedIndex > -1) {
-				console.log("1");
 				Object.assign(this.users[this.editedIndex], this.editedItem);
-				console.log(this.editedItem);
 				let result = await axios.put(
 					"/auth/user/update",
 					this.editedItem
 				);
-				console.log(result);
 			} else {
-				console.log("2");
 				this.users.push(this.editedItem);
 			}
 			this.close();

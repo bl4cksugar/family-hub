@@ -43,27 +43,29 @@ export default {
 					title: this.title,
 					description: this.description
 				});
-				console.log(result);
 				this.$emit("newsCreated");
+
+				let toast = this.$toasted.success("Your post was created!", {
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 1000
+				});
 			}
 		},
 		changeVisiblity() {
 			if (this.isVisible) this.isVisible = false;
 			else this.isVisible = true;
 		}
-		// photoSet(fileUrl) {
-		// 	console.log(fileUrl);
-		// 	this.ImgUrl = fileUrl;
-		// }
 	},
 	components: {}
 };
 </script>
 
 <style scoped>
-.v-form,
-.v-textarea {
-	width: 100%;
+.v-form {
+	width: 90%;
 	background: none;
 }
 .v-form {
@@ -74,7 +76,8 @@ visiblity-class {
 }
 .center {
 	max-width: 800px;
-
+	display: flex;
+	flex-direction: column;
 	justify-items: center;
 }
 </style>

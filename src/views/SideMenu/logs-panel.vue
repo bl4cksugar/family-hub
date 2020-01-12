@@ -5,6 +5,7 @@
 				<v-card-title>
 					System Logs
 					<v-spacer></v-spacer>
+
 					<v-text-field
 						v-model="search"
 						append-icon="fas fa-search"
@@ -15,12 +16,11 @@
 				</v-card-title>
 				<v-data-table
 					:headers="headers"
-					:items="users"
+					:items="logs"
 					:search="search"
-					:options.sync="options"
-					:server-items-length="totalSurnames"
-					:loading="loading"
 					class="elevation-1"
+					:loading="loading"
+					loading-text="Loading... Please wait"
 				></v-data-table>
 			</v-card>
 		</v-col>
@@ -28,25 +28,37 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
 	data() {
 		return {
 			search: "",
+
 			headers: [
 				{
 					text: "ID",
 					align: "left",
 					sortable: false,
-					value: "number"
+					value: "id"
 				},
 
-				{ text: "content", value: "content" }
+				{ text: "message", value: "message" },
+				{ text: "time", value: "updated_at" }
 			],
-			users: []
+			logs: [],
+			loading: false
 		};
+	},
+	async created() {
+		this.loading = true;
+		let result = await axios.get("/auth/admin/logs/all");
+		if (result) {
+			this.logs = result.data.data.reverse();
+		}
+		this.loading = false;
 	}
 };
 </script>
 
 <style scoped>
-</style>
+</style

@@ -6,22 +6,29 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null
+    user: null,
+    member: null
   },
   getters: {
-    user: state => state.user
+    user: state => state.user,
+    member: state => state.member
   },
   mutations: {
     storeUser(state, data) {
       state.user = data
-      // state.user.type = "admin"
+    },
+    storeMember(state, data) {
+      state.member = data
     },
     deleteUser(state) {
       state.user = null
+    },
+    deleteMember(state) {
+      state.member = null
     }
   },
   actions: {
-    async setSession({
+    setSession({
       commit
     }, data) {
       commit('storeUser', data)
@@ -31,6 +38,10 @@ export default new Vuex.Store({
     }) {
       cookie.deleteTokenCookie();
       commit('deleteUser');
+      commit('deleteMember');
+    },
+    setMember({ commit }, data) {
+      commit('storeMember', data)
     }
   }
 })
