@@ -51,10 +51,10 @@
 							:rules="[rules.required]"
 						></v-text-field>
 						<div class="my-2">
-							<v-btn text small color="primary">you forgotten your password? Remind</v-btn>
+							<v-btn text small color="primary">I have forgot my password</v-btn>
 						</div>
 						<v-btn @click="login" style="margin:10px">
-							<span>SIGN UP</span>
+							<span>SIGN IN</span>
 						</v-btn>
 					</v-form>
 				</v-container>

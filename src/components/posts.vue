@@ -1,24 +1,50 @@
 <template>
 	<div class="row center">
+		<v-dialog v-model="dialog" max-width="600px">
+			<v-card>
+				<v-card-title>
+					<span class="headline">News Inforation</span>
+				</v-card-title>
+				<v-card-text>
+					<v-container>
+						<v-row>
+							<v-col cols="12" sm="6" md="4">
+								<v-text-field v-model="editableItem.title" label="Title*" required></v-text-field>
+							</v-col>
+							<v-col cols="12" sm="6" md="4">
+								<v-text-field v-model="editableItem.description" label=" Description" required></v-text-field>
+							</v-col>
+						</v-row>
+					</v-container>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+					<v-btn color="blue darken-1" text @click="submit(news)">Save</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<div class="col-md" v-for="post in news" :key="post.id">
 			<v-card min-width="344">
-				<!-- <span
-					v-if="post.author == onlineUser.userName"
-					class="close"
-					@click="deletePost(post.id)"
-					title="Close PopUp"
-					style="color:white"
-				>&times;</span>-->
-
 				<v-list-item>
 					<v-list-item-content>
 						<v-list-item-title style="display:flex; justify-content:space-between">
 							<span class="headline">{{post.title}}</span>
+
 							<div>
-								<v-btn icon @click="editPosts">
+								<v-btn
+									v-if="member.user_id ===post.author_id"
+									icon
+									@click="()=>{
+										editedIndex = news.indexOf(post);
+										editableItem = Object.assign({}, post);
+										dialog = true;}"
+									dark
+								>
 									<v-icon color="green">mdi-pencil</v-icon>
 								</v-btn>
-								<v-btn icon @click="deletePosts(post.id)">
+								<v-btn v-if="member.user_id ===post.author_id" icon @click="deletePosts(post.id)">
 									<v-icon color="red">mdi-delete</v-icon>
 								</v-btn>
 							</div>
@@ -45,27 +71,32 @@
 
 <script>
 import CreatePost from "./create-post";
+import { mapGetters } from "vuex";
 import axios from "axios";
 
 export default {
 	props: ["userProfile", "currentPosts", "refreshPost"],
 	data: () => ({
 		news: [],
+		dialog: false,
+		title: "",
+		description: "",
 		onlineUser: {},
 		loading: false,
 		loader: null,
+		editedIndex: -1,
+		editableItem: { title: "", description: "" },
 		lastPost: 0
 	}),
 	async created() {
 		await this.getPosts();
 	},
+	computed: {
+		...mapGetters({
+			member: "member"
+		})
+	},
 	watch: {
-		// loader() {
-		// 	const l = this.loader;
-		// 	this[l] = !this[l];
-		// 	setTimeout(() => (this[l] = false), 1000);
-		// 	this.loader = null;
-		// },
 		async refreshPost(after, before) {
 			await this.getPosts();
 		}
@@ -77,9 +108,6 @@ export default {
 				this.news = result.data.data;
 			}
 		},
-		async editPosts() {
-			let result = await axios.put("auth/news/update");
-		},
 		async deletePosts(newsId) {
 			console.log(newsId);
 			if (confirm("Do you really want to delete?")) {
@@ -89,61 +117,28 @@ export default {
 				console.log(result);
 				this.getPosts();
 			}
+		},
+		close() {
+			this.dialog = false;
+			setTimeout(() => {
+				this.editableItem = Object.assign({}, this.defaultItem);
+				this.editedIndex = -1;
+			}, 300);
+		},
+		async submit(news) {
+			if (this.editedIndex > -1) {
+				Object.assign(this.news[this.editedIndex], this.editableItem);
+				let result = await axios.put("/auth/news/update", {
+					id: this.editableItem.id,
+					title: this.editableItem.title,
+					description: this.editableItem.description
+				});
+			} else {
+				this.news.push(this.editableItem);
+			}
+			this.close();
 		}
 	},
-	// refreshPosts: function() {
-	// 	var that = this;
-	// 	axios
-	// 		.get(
-	// 			"posts/RefreshPosts" +
-	// 				"?lastPost=" +
-	// 				that.lastPost +
-	// 				"&userId=" +
-	// 				that.userProfile.id +
-	// 				"&currentPosts=" +
-	// 				that.currentPosts
-	// 		)
-	// 		.then(function(data) {
-	// 			console.log("OUTPUT:", data.data.payload[0]);
-	// 			that.posts = data.data.payload;
-	// 		});
-	// },
-	// addReaction: async function(id) {
-	// 	var that = this;
-	// 	await axios
-	// 		.post("posts/AddReaction/" + id, {
-	// 			PostId: id,
-	// 			UserId: that.onlineUser.id
-	// 		})
-	// 		.then(async function(data) {
-	// 			await that.refreshPosts();
-	// 		});
-	// },
-	// deletePost: function(id) {
-	// 	var that = this;
-	// 	console.log(id);
-	// 	axios.delete("posts/deletepost/" + id).then(function(data) {
-	// 		that.refreshPosts();
-	// 	});
-	// },
-	// morePosts: function() {
-	// 	var that = this;
-	// 	that.loader = "loading";
-	// 	axios
-	// 		.get(
-	// 			"posts/" +
-	// 				that.currentPosts +
-	// 				"?lastPost=" +
-	// 				that.lastPost +
-	// 				"&userId=" +
-	// 				that.userProfile.id
-	// 		)
-	// 		.then(function(data) {
-	// 			that.posts.push.apply(that.posts, data.data.payload);
-	// 			that.lastPost = that.posts[that.posts.length - 1].id;
-	// 		});
-	// }
-
 	components: {
 		"create-post": CreatePost
 	}
