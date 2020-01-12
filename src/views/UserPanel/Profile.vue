@@ -4,10 +4,14 @@
 			<v-card style="background-color: rgba(238, 238, 238, 0.75);">
 				<v-card-text style="justify-content:start;align-items:center; display:flex;">
 					<v-avatar color="green" size="124">
-						<img :src="'http://family.przedprojekt.com/storage/' + member.avatar" />
+						<img
+							:src="'http://family.przedprojekt.com/storage/' + member.avatar !==null? member.avatar :'' "
+						/>
 					</v-avatar>
 					<v-col>
-						<h1 style="padding:20px;">{{`${member.first_name} ${member.middle_name} ${member.last_name}`}}</h1>
+						<h1
+							style="padding:20px;"
+						>{{`${member.first_name} ${member.middle_name === null ? "": member.middle_name} ${member.last_name}`}}</h1>
 						<label style="padding:20px;">
 							New avatar? Upload it!
 							<input type="file" @change="onFileChanged" />
@@ -80,7 +84,22 @@ export default {
 		EditProfile,
 		ResetPassword
 	},
-
+	created() {
+		if (
+			(this.member.first_name === null) &
+			(this.member.last_name === null)
+		)
+			this.$toasted.info(
+				"You have to fill your profile fristly, before you will start playing with familly tree",
+				{
+					theme: "toasted-primary",
+					position: "top-right",
+					fullWidth: true,
+					fitToScreen: false,
+					duration: 4000
+				}
+			);
+	},
 	watch: {
 		loader() {
 			const l = this.loader;
@@ -94,7 +113,6 @@ export default {
 	methods: {
 		onFileChanged(event) {
 			this.selectedFile = event.target.files[0];
-			console.log(this.selectedFile);
 		},
 		async onUpload() {
 			this.loader = "loading3";

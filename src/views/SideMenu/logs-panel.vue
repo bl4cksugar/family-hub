@@ -55,7 +55,6 @@ export default {
 		if (result) {
 			this.logs = result.data.data;
 		}
-		console.log(result);
 		this.loading = false;
 	}
 };

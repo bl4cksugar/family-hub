@@ -8,19 +8,40 @@
 	</v-row>
 </template>
 
-// <script>
+<script>
+import axios from "axios";
 export default {
 	data() {
 		return {
 			dialog: false
 		};
+	},
+	methods: {
+		async deleteTree() {
+			if (confirm("Do you really want to delete?")) {
+				let result = await axios
+					.delete("auth/relation/delete/all")
+					.catch(error => {
+						this.$toasted.error("Something goes wrong", {
+							theme: "toasted-primary",
+							position: "top-right",
+							fullWidth: true,
+							fitToScreen: false,
+							duration: 3000
+						});
+					});
+				if (result)
+					this.$toasted.success("Tree successfully deleted", {
+						theme: "toasted-primary",
+						position: "top-right",
+						fullWidth: true,
+						fitToScreen: false,
+						duration: 3000
+					});
+				this.dialog = false;
+				this.$emit("treeDeleted");
+			}
+		}
 	}
 };
-
-// async deleteTree() {
-
-// 		if (confirm("Do you really want to delete?")) {
-// 			let result = await axios.delete("auth/relation/delete/all");
-// 		}
-// 	}
 </script>

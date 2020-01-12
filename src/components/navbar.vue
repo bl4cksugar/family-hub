@@ -51,7 +51,7 @@
 							:rules="[rules.required]"
 						></v-text-field>
 						<div class="my-2">
-							<v-btn text small color="primary">I have forgot my password</v-btn>
+							<v-btn text small color="primary" @click="resetPassword">I have forgot my password</v-btn>
 						</div>
 						<v-btn @click="login" style="margin:10px">
 							<span>SIGN IN</span>
@@ -102,10 +102,14 @@ export default {
 			isLogged: "user"
 		})
 	},
-	async created() {
-		let result = await axios.get("auth/pivot/get");
-		if (result) {
-			this.messages = result.data.count;
+	async mounted() {
+		console.log(this.isLogged);
+		if (this.isLogged !== null) {
+			let result = await axios.get("auth/pivot/get");
+			if (result) {
+				this.messages = result.data.count;
+			}
+			console.log(result);
 		}
 	},
 	methods: {
@@ -145,8 +149,8 @@ export default {
 									memberInfo.data.data[0]
 								);
 							if (
-								memberInfo.data.data[0].first_name.length > 0 &&
-								memberInfo.data.data[0].last_name.length > 0
+								memberInfo.data.data[0].first_name !== null &&
+								memberInfo.data.data[0].last_name !== null
 							) {
 								if (user.data.type === "admin")
 									this.$router.push("admin/logs");
@@ -185,6 +189,11 @@ export default {
 					content: "Something goes wrong! Try again"
 				};
 			}
+		},
+		async resetPassword() {
+			let result = await axios.post(
+				"auth/passsword/create?email=" + this.email
+			);
 		}
 	}
 };

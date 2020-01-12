@@ -49,7 +49,6 @@ export default {
 	},
 	watch: {
 		async refreshPicture(after, before) {
-			console.log("dupa");
 			await this.getPicture();
 		}
 	},
@@ -65,12 +64,10 @@ export default {
 		},
 
 		async deletePicture(pictureId) {
-			console.log(pictureId);
 			if (confirm("Do you really want to delete?")) {
 				let result = await axios.delete(
 					"auth/gallery/delete?id=" + pictureId
 				);
-				console.log(result);
 				this.getPicture();
 			}
 		}

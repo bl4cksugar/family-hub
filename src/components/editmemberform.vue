@@ -110,15 +110,6 @@
 									></v-date-picker>
 								</v-menu>
 							</v-col>
-							<v-col cols="12">
-								<v-text-field
-									:disabled="!isPicked"
-									hint="If you want to invite this member to tree, you have to add a email"
-									persistent-hint
-									v-model="email"
-									label="Email"
-								></v-text-field>
-							</v-col>
 						</v-row>
 					</v-container>
 					<small>*indicates required field</small>
@@ -141,6 +132,10 @@ export default {
 		familly: {
 			type: Array,
 			required: true
+		},
+		isFounder: {
+			type: Boolean,
+			required: true
 		}
 	},
 	data: () => ({
@@ -161,29 +156,26 @@ export default {
 		isPicked: false
 	}),
 	watch: {
-		isChild() {
-			this.isPartner = !this.isChild;
-		},
-		isPartner() {
-			this.isChild = !this.isPartner;
-		},
-		memberId(newVal) {
+		async memberId(newVal) {
+			console.log(newVal);
 			if (newVal === undefined) this.memberId = null;
 			if (newVal !== null) {
 				this.isPicked = true;
 				this.editableMember = this.familly.find(
 					item => item.id === this.memberId
 				);
+				let result = await axios.get(
+					"auth/member/info/one/" + this.editableMember.user_id
+				);
+				console.log(result.data.data[0]);
+				this.editableMember = result.data.data[0];
 			} else this.isPicked = false;
 		}
 	},
 	computed: {
 		...mapGetters({
 			member: "member"
-		}),
-		isFounder() {
-			return this.member.user_id === 48;
-		}
+		})
 	},
 	methods: {
 		async submit() {

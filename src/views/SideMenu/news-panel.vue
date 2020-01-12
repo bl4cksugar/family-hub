@@ -149,7 +149,6 @@ export default {
 		},
 
 		async deleteItem(item) {
-			console.log(item);
 			const index = this.news.indexOf(item);
 			confirm("Are you sure you want to delete this item?") &&
 				this.news.splice(index, 1);

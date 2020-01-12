@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import LandingPage from './views/Home.vue'
 import ActiveUser from './views/ActiveUser.vue'
+import ActiveFounder from './views/ActiveFounder.vue'
 
 import UsersPanel from './views/SideMenu/users-panel.vue'
 import FamiliesPanel from './views/SideMenu/families-panel.vue'
@@ -111,8 +112,13 @@ const router = new Router({
   {
     path: '/verify/:token',
     name: 'verifyUser',
+    component: ActiveFounder
+  },
+  {
+    path: '/verify/member/:token',
+    name: 'verifyUser',
     component: ActiveUser
-  }
+  },
 
   ]
 })

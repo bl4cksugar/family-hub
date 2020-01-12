@@ -54,7 +54,6 @@ export default {
 		let result = await axios
 			.get("auth/signup/activate/member/" + this.$route.params.token)
 			.catch(error => {
-				console.log(error);
 				this.message = error.data.message;
 				this.isValid = false;
 			});
@@ -83,7 +82,6 @@ export default {
 				);
 				this.$router.push("/");
 			}
-			console.log(result);
 		}
 	}
 };

@@ -2,9 +2,9 @@
 	<v-container class="box" fluid fill-height>
 		<v-col sm="12">
 			<div class="row" style="margin-top:50px">
-				<new-member-form :familly="familly" @memberCreated="refreshTree"></new-member-form>
-				<edit-member-form :familly="familly"></edit-member-form>
-				<delete-tree></delete-tree>
+				<new-member-form :isFounder="isFounder" :familly="familly" @memberCreated="refreshTree"></new-member-form>
+				<edit-member-form :isFounder="isFounder" :familly="familly" v-if="isFounder"></edit-member-form>
+				<delete-tree v-if="isFounder" @treeDeleted="refreshTree"></delete-tree>
 			</div>
 			<div id="tree"></div>
 		</v-col>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import NewMemberForm from "../../components/newmemberform";
 import EditMemberForm from "../../components/editmemberform";
 import DeleteTree from "../../components/deleteTree";
@@ -30,21 +31,30 @@ export default {
 				template: "group_grey",
 				groupState: OrgChart.EXPAND
 			},
-			tags: {}
+			tags: {},
+			isFounder: false
 		};
 	},
+	computed: {
+		...mapGetters({
+			member: "member"
+		})
+	},
 	watch: {
-		familly(newVal) {
-			newVal.forEach(item => {
-				// console.log(item.img, item.id);
-				return "";
-				// return item.img.length > 0
-				// 	? (item.img = `http://family.przedprojekt.com/storage/${item.img}`)
-				// 	: (item.img = "");
-			});
+		async familly(newVal) {
+			console.log(newVal);
+			if (newVal !== null)
+				newVal.forEach(item => {
+					return item.img !== null
+						? (item.img = `http://family.przedprojekt.com/storage/${item.img}`)
+						: (item.img = "");
+				});
 		}
 	},
 	async created() {
+		let member = await axios.get("auth/member/info");
+		this.isFounder = member.data.founder;
+		console.log(member);
 		let pupa2 = await axios.get("auth/tree");
 		console.log(pupa2);
 		let result = await axios.get("auth/relation/all");
@@ -88,7 +98,16 @@ export default {
 		},
 		async mountTree() {
 			let result = await axios.get("/auth/tree");
-			this.familly = result.data.data;
+			if (result.data.data !== null) this.familly = result.data.data;
+			if (this.familly.length === 0) {
+				let result = await axios.post("auth/relation/add", {
+					partner_1_id: this.member.user_id,
+					partner_2_id: "",
+					parent_id: null
+				});
+				this.mountTree();
+				return;
+			}
 			this.groupRender();
 
 			OrgChart.templates.diva.field_2 =
@@ -117,7 +136,6 @@ export default {
 				if (args.name.startsWith("marriage")) {
 					return false;
 				}
-				console.log(args);
 				if (args.name == "id") {
 					return false;
 				}
