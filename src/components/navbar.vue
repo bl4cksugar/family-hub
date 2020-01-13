@@ -222,7 +222,6 @@ export default {
 					duration: 4000
 				});
 			}
-			console.log(result);
 		}
 	}
 };

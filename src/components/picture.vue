@@ -49,7 +49,6 @@ export default {
 	},
 	watch: {
 		async refreshPicture(after, before) {
-			console.log(after);
 			if (after === true) {
 				await this.getPicture();
 				this.$emit("refreshed");

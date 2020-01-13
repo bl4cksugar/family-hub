@@ -3,7 +3,7 @@
 		<v-row align="center" justify="center">
 			<v-col md="6" class="d-flex align-center justify-center px-0 bg">
 				<div class="background-img">
-					<v-img src="../assets/logofinal.png" class="img" max-width="200px" max-height="400px"></v-img>
+					<v-img src="~@/assets/logofinal.png" class="img" max-width="200px" max-height="400px"></v-img>
 				</div>
 			</v-col>
 			<registration></registration>

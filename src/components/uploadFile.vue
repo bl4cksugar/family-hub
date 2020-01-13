@@ -73,7 +73,6 @@ export default {
 						this.uploadPercentage = 0;
 					}, 1000);
 				});
-			console.log(this.uploadPercentage);
 			this.$emit("refreshGallery");
 		}
 	}
