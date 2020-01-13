@@ -132,7 +132,6 @@ export default {
 			let result = await axios
 				.post("auth/admin/news/all?prefix= " + this.prefix)
 				.catch(error => {
-					console.log(error);
 					this.$toasted.error(error.data.message, {
 						theme: "toasted-primary",
 						position: "top-right",

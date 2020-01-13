@@ -60,7 +60,6 @@ export default {
 		if (result) {
 			this.member = result.data;
 		}
-		console.log(result);
 	},
 	methods: {
 		async submit() {

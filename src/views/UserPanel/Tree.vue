@@ -3,7 +3,7 @@
 		<v-col sm="12">
 			<div class="row" style="margin-top:50px">
 				<new-member-form :isFounder="isFounder" :familly="familly" @memberCreated="refreshTree"></new-member-form>
-				<edit-member-form :isFounder="isFounder" :familly="familly" v-if="isFounder"></edit-member-form>
+				<!-- <edit-member-form :isFounder="isFounder" :familly="familly" v-if="isFounder"></edit-member-form> -->
 				<delete-tree v-if="isFounder" @treeDeleted="refreshTree"></delete-tree>
 			</div>
 			<div id="tree"></div>
@@ -78,7 +78,8 @@ export default {
 		async mountTree() {
 			let result = await axios.get("/auth/tree");
 			if (result.data.data !== null) this.familly = result.data.data;
-			if (this.familly.length === 0) {
+			else this.familly = [];
+			if (this.familly === null || this.familly.length === 0) {
 				let result = await axios.post("auth/relation/add", {
 					partner_1_id: this.member.user_id,
 					partner_2_id: "",
@@ -97,10 +98,16 @@ export default {
 			var chart = new OrgChart(document.getElementById("tree"), {
 				template: "diva",
 				nodeMouseClick: OrgChart.action.details,
-				nodeMenu: {
-					details: { text: "Details" },
-					remove: { text: "Remove" }
-				},
+				nodeMenu: this.isFounder
+					? {
+							details: { text: "Details" },
+							delete: {
+								text: "Delete",
+								icon: OrgChart.icon.add(18, 18, "#FF8304"),
+								onClick: this.deleteRelation
+							}
+					  }
+					: null,
 				nodeBinding: {
 					field_0: "name",
 					field_1: "birthDay",
@@ -128,6 +135,53 @@ export default {
 					return false;
 				}
 			});
+		},
+		async deleteRelation(node) {
+			if (confirm("Do you really want to delete?")) {
+				const member = this.familly.find(i => i.id === parseInt(node));
+				const relations = await axios.get("auth/relation/all");
+				const relation = relations.data.data.find(
+					i => i.id === member.relation_id
+				);
+				if (relation.partner_1_id === member.user_id) {
+					relation.partner_1_id = relation.partner_2_id;
+					relation.partner_2_id = null;
+				} else if (relation.partner_2_id === member.user_id) {
+					relation.partner_2_id = null;
+				}
+				if (
+					relation.partner_2_id === null &&
+					relation.partner_1_id === null
+				)
+					relation.parent_id = null;
+				let result = await axios
+					.put("auth/relation/update", {
+						id: relation.id,
+						partner_1_id: relation.partner_1_id,
+						partner_2_id: relation.partner_2_id,
+						parent_id: relation.parent_id
+					})
+					.catch(error => {
+						this.$toasted.error("Something goes wrong", {
+							theme: "toasted-primary",
+							position: "top-right",
+							fullWidth: true,
+							fitToScreen: false,
+							duration: 3000
+						});
+					});
+				if (result) {
+					this.$toasted.success("Member successfully deleted", {
+						theme: "toasted-primary",
+						position: "top-right",
+						fullWidth: true,
+						fitToScreen: false,
+						duration: 3000
+					});
+					this.refreshTree();
+				}
+				this.dialog = false;
+			}
 		}
 	},
 	async mounted() {
